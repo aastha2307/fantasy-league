@@ -2,6 +2,27 @@
 
 This app targets **[Firebase App Hosting](https://firebase.google.com/docs/app-hosting)** (Next.js on Cloud Run). The repo includes [`apphosting.yaml`](./apphosting.yaml).
 
+**Billing:** App Hosting requires the Firebase project to be on the **Blaze (pay-as-you-go)** plan (Cloud Run + build infrastructure). [Upgrade in the console](https://console.firebase.google.com/) if `firebase apphosting:*` commands ask you to upgrade.
+
+## Push code (GitHub → Firebase)
+
+Firebase does **not** receive `git push` directly. You push to **GitHub**; App Hosting builds from the connected repo.
+
+1. Create a **new repository** on GitHub (empty, no README if you already have a local commit).
+2. In `ipl-fantasy` on your machine:
+
+   ```bash
+   git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
+   git push -u origin main
+   ```
+
+3. In [Firebase → App Hosting](https://console.firebase.google.com/), connect that repository, select branch **`main`**, and set **root directory** if the app lives in a subfolder.
+4. Pushes to `main` trigger new rollouts. Or run:
+
+   ```bash
+   firebase apphosting:rollouts:create YOUR_BACKEND_ID --git-branch main --project YOUR_PROJECT_ID
+   ```
+
 ## What you must change for Firebase
 
 Do **not** commit secrets. Use the Firebase console and Secret Manager instead.
