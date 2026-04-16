@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: iplfantasy
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d iplfantasy"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      CRICKET_API_KEY: ${CRICKET_API_KEY:-}
+      APP_URL: ${APP_URL:-}
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/iplfantasy
+    volumes:
+      - ./docker-uploads:/app/public/uploads
+
+volumes:
+  postgres-data:

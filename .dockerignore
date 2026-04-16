@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+.env
+.env.*
+docker-data
+docker-uploads
+.DS_Store
+coverage
+*.tsbuildinfo
+.vercel

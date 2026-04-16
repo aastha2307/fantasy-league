@@ -1,0 +1,24 @@
+# Firebase App Hosting — https://firebase.google.com/docs/app-hosting
+# See FIREBASE.md for setup. Console env vars override values here.
+#
+# Create secrets (names must match):
+#   firebase apphosting:secrets:set CRICKET_API_KEY --project YOUR_PROJECT_ID
+#   firebase apphosting:secrets:set DATABASE_URL --project YOUR_PROJECT_ID
+# Set APP_URL in the Firebase console (BUILD + RUNTIME) to your live URL, e.g. https://<backend>--<project>.web.app
+
+runConfig:
+  memoryMiB: 1024
+  cpu: 1
+  concurrency: 20
+
+scripts:
+  buildCommand: npm run build
+  runCommand: sh -c "npx prisma db push && exec npm run start"
+
+env:
+  - variable: CRICKET_API_KEY
+    secret: CRICKET_API_KEY
+    availability: [RUNTIME]
+  - variable: DATABASE_URL
+    secret: DATABASE_URL
+    availability: [RUNTIME]
