@@ -2,7 +2,15 @@
 
 This app targets **[Firebase App Hosting](https://firebase.google.com/docs/app-hosting)** (Next.js on Cloud Run). The repo includes [`apphosting.yaml`](./apphosting.yaml).
 
-**Firebase Data Connect** is configured under [`dataconnect/`](./dataconnect/) and [`firebase.json`](./firebase.json). It uses the **same Cloud SQL for PostgreSQL** instance as Prisma (`DATABASE_URL`). `schemaValidation: COMPATIBLE` means Data Connect adds its own tables (e.g. `dc_health`) and does **not** remove existing Prisma tables.
+### PostgreSQL: `pg` and Data Connect are not the same thing
+
+- **Cloud SQL** is one PostgreSQL server (your database).
+- **node-postgres (`pg`)** — app APIs use `DATABASE_URL` for core tables (`League`, `GameRoom`, etc.). A human-readable model reference lives at [`docs/schema.prisma`](./docs/schema.prisma) (not used by the build).
+- **Firebase Data Connect** ([`dataconnect/`](./dataconnect/)) is a **GraphQL API + tooling** that *also* uses that same PostgreSQL database for tables it manages (e.g. `dc_health`). It does **not** automatically replace direct SQL; route handlers would need GraphQL operations if you wanted to route everything through Data Connect.
+
+**Production readiness:** [`apphosting.yaml`](./apphosting.yaml) sets `DATABASE_URL` and `CRICKET_API_KEY` from secrets, wires **Data Connect** env vars for the server, and **NEXT_PUBLIC_FIREBASE_*** for the browser bundle so Auth / Storage / Data Connect client SDKs talk to your Firebase project. After a rollout, call **`GET /api/health`** on your live site — it verifies **Postgres** (`pg`), **Firestore** (Admin SDK), and **Data Connect** (Admin GraphQL). Enable **Cloud Firestore** and deploy **Data Connect** (`firebase deploy --only dataconnect`) so those checks pass.
+
+**Firebase Data Connect** is configured under [`dataconnect/`](./dataconnect/) and [`firebase.json`](./firebase.json). It uses the **same Cloud SQL for PostgreSQL** instance as the app (`DATABASE_URL`). `schemaValidation: COMPATIBLE` means Data Connect adds its own tables (e.g. `dc_health`) and does **not** remove existing app tables.
 
 ### “Deploying Data Connect schemas…” then `Error: An unexpected error has occurred`
 
@@ -95,7 +103,7 @@ Grant the App Hosting backend access to these secrets if the CLI prompts you.
 
 ## Why PostgreSQL?
 
-Firebase App Hosting runs your app on **Cloud Run** with an **ephemeral filesystem**. **SQLite and on-disk uploads are not durable.** The app uses **PostgreSQL** via Prisma. Provision a managed Postgres instance and point `DATABASE_URL` at it (SSL usually required).
+Firebase App Hosting runs your app on **Cloud Run** with an **ephemeral filesystem**. **SQLite and on-disk uploads are not durable.** The app uses **PostgreSQL** via `pg`. Provision a managed Postgres instance and point `DATABASE_URL` at it (SSL usually required).
 
 Good options:
 
@@ -130,7 +138,7 @@ Console variables **override** [`apphosting.yaml`](./apphosting.yaml).
 
 ## What the config does
 
-- **`runCommand`** in `apphosting.yaml` runs `prisma db push` before `npm run start` so the database schema matches `schema.prisma` (no Prisma Migrate history for now).
+- **`runCommand`** in `apphosting.yaml` starts the Next.js server with `npm run start`. Apply or migrate the database schema separately (e.g. against a dump or your existing Cloud SQL) so tables match [`docs/schema.prisma`](./docs/schema.prisma).
 - **Memory** is set to 1024 MiB to leave headroom for OCR (Tesseract). Increase if you see OOM errors.
 
 ## Uploads / screenshots
@@ -142,7 +150,7 @@ Dream11 screenshots are saved under `public/uploads` on the **local disk**. On A
 
 ## Troubleshooting
 
-- **`db push` fails**: Check `DATABASE_URL` (network access from Cloud Run to your DB, SSL params, IP allowlist if used).
+- **Database connection errors**: Check `DATABASE_URL` (network access from Cloud Run to your DB, SSL params, IP allowlist if used).
 - **Build fails**: Ensure `npm run build` works locally with `DATABASE_URL` set to the same kind of Postgres URL.
 - **OCR errors**: Bump `memoryMiB` in `apphosting.yaml` or reduce concurrent requests (`concurrency`).
 
@@ -152,8 +160,7 @@ Dream11 screenshots are saved under `public/uploads` on the **local disk**. On A
 docker compose up db -d
 cp .env.example .env
 # Set CRICKET_API_KEY in .env
-npx prisma db push
 npm run dev
 ```
 
-App Hosting and Docker run `prisma db push` on startup so the schema stays in sync without migration files.
+Ensure your Postgres instance already has the tables described in [`docs/schema.prisma`](./docs/schema.prisma) (e.g. from an existing Cloud SQL database or a one-time schema apply).

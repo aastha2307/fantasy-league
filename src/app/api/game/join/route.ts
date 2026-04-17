@@ -1,6 +1,5 @@
-import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { isPgUniqueViolation, newId, query, queryOne } from "@/lib/db";
 import { emptyTeam, processDream11Screenshot } from "@/lib/process-screenshot";
 
 export const maxDuration = 120;
@@ -20,15 +19,25 @@ export async function POST(req: Request) {
       );
     }
 
-    const room = await prisma.gameRoom.upsert({
-      where: { cricApiMatchId },
-      create: { cricApiMatchId, label },
-      update: { label },
-    });
+    const room = await queryOne<{
+      id: string;
+      label: string;
+      cricApiMatchId: string;
+    }>(
+      `INSERT INTO "GameRoom" (id, "cricApiMatchId", label)
+       VALUES ($1, $2, $3)
+       ON CONFLICT ("cricApiMatchId") DO UPDATE SET label = EXCLUDED.label
+       RETURNING id, label, "cricApiMatchId"`,
+      [newId(), cricApiMatchId, label]
+    );
+    if (!room) {
+      return NextResponse.json({ error: "Could not create or load game room." }, { status: 500 });
+    }
 
-    const existing = await prisma.gamePlayer.findUnique({
-      where: { roomId_displayName: { roomId: room.id, displayName } },
-    });
+    const existing = await queryOne<{ id: string }>(
+      `SELECT id FROM "GamePlayer" WHERE "roomId" = $1 AND "displayName" = $2`,
+      [room.id, displayName]
+    );
     if (existing) {
       return NextResponse.json(
         {
@@ -55,54 +64,48 @@ export async function POST(req: Request) {
       ocrPoints = processed.ocrPoints;
     }
 
-    const player = await prisma.gamePlayer.create({
-      data: {
-        roomId: room.id,
-        displayName,
-        imagePath,
-        ocrText,
-        ocrPoints,
-        playersJson,
-      },
-    });
+    const playerId = newId();
+    try {
+      await query(
+        `INSERT INTO "GamePlayer" (id, "roomId", "displayName", "imagePath", "ocrText", "ocrPoints", "playersJson")
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [playerId, room.id, displayName, imagePath, ocrText, ocrPoints, playersJson]
+      );
+    } catch (e) {
+      if (isPgUniqueViolation(e)) {
+        return NextResponse.json(
+          {
+            error: "That display name was just taken in this room. Try another.",
+            code: "23505",
+          },
+          { status: 409 }
+        );
+      }
+      throw e;
+    }
 
     return NextResponse.json({
       roomId: room.id,
-      playerId: player.id,
+      playerId,
       label: room.label,
     });
   } catch (e) {
     console.error("POST /api/game/join:", e);
 
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        return NextResponse.json(
-          {
-            error: "That display name was just taken in this room. Try another.",
-            code: e.code,
-            detail: e.message,
-          },
-          { status: 409 }
-        );
-      }
+    if (isPgUniqueViolation(e)) {
       return NextResponse.json(
         {
-          error: "Database error while joining.",
-          code: e.code,
-          detail: e.message,
-          hint:
-            e.message.includes("ocrPoints") || /no such column/i.test(e.message)
-              ? "Run `npx prisma db push` in the ipl-fantasy folder so the DB matches schema."
-              : undefined,
+          error: "That display name was just taken in this room. Try another.",
+          code: "23505",
         },
-        { status: 500 }
+        { status: 409 }
       );
     }
 
     const message = e instanceof Error ? e.message : String(e);
     const hint =
       /ocrPoints|no such column|does not exist/i.test(message)
-        ? "Run `npx prisma db push` in the ipl-fantasy folder so the DB matches schema."
+        ? "Ensure the database schema matches the app (e.g. GamePlayer.ocrPoints column)."
         : /ENOENT|EACCES|permission/i.test(message)
           ? "The server could not write the uploaded image under public/uploads. Check folder permissions."
           : undefined;

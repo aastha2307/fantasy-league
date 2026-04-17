@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { query, queryOne } from "@/lib/db";
 import { parsePlayersJson } from "@/lib/scoring";
 
 /**
@@ -32,33 +32,37 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ roomId: strin
       }
     }
 
-    const gp = await prisma.gamePlayer.findFirst({
-      where: { id: playerId, roomId },
-    });
+    const gp = await queryOne<{ id: string }>(
+      `SELECT id FROM "GamePlayer" WHERE id = $1 AND "roomId" = $2`,
+      [playerId, roomId]
+    );
     if (!gp) {
       return NextResponse.json({ error: "Player not found in this game." }, { status: 404 });
     }
 
-    const data: { ocrPoints?: number | null; playersJson?: string } = {};
+    const sets: string[] = [];
+    const params: unknown[] = [];
+    let i = 1;
+
     if (hasManualPoints) {
       const v = body!.ocrPoints;
       if (v !== null && v !== undefined && (typeof v !== "number" || Number.isNaN(v))) {
         return NextResponse.json({ error: "ocrPoints must be a number or null." }, { status: 400 });
       }
-      data.ocrPoints = v === null || v === undefined ? null : Math.round(v * 100) / 100;
+      const rounded = v === null || v === undefined ? null : Math.round(v * 100) / 100;
+      sets.push(`"ocrPoints" = $${i++}`);
+      params.push(rounded);
     }
     if (playersJson !== undefined && playersJson !== "") {
-      data.playersJson = playersJson;
+      sets.push(`"playersJson" = $${i++}`);
+      params.push(playersJson);
     }
 
-    if (Object.keys(data).length === 0) {
+    if (sets.length === 0) {
       return NextResponse.json({ error: "Nothing to update." }, { status: 400 });
     }
 
-    await prisma.gamePlayer.update({
-      where: { id: playerId },
-      data,
-    });
+    await query(`UPDATE "GamePlayer" SET ${sets.join(", ")} WHERE id = $${i}`, [...params, playerId]);
 
     return NextResponse.json({ ok: true });
   } catch (e) {

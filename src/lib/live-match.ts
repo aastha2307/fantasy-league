@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import { fetchMatchInfo, fetchMatchScorecard } from "@/lib/cricapi";
+import { loadMatchStandingsBundle } from "@/lib/load-match";
 import { scorecardJsonToPlayerPoints } from "@/lib/scorecard-to-points";
 import { parsePlayersJson, scoreTeam } from "@/lib/scoring";
 
@@ -27,14 +27,7 @@ export type LiveStandingsResult = {
 };
 
 export async function computeLiveStandings(matchId: string): Promise<LiveStandingsResult> {
-  const match = await prisma.match.findUnique({
-    where: { id: matchId },
-    include: {
-      points: true,
-      teams: { include: { member: true } },
-      league: { include: { members: true } },
-    },
-  });
+  const match = await loadMatchStandingsBundle(matchId);
 
   if (!match) {
     throw new Error("Match not found");

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { query, queryOne } from "@/lib/db";
 import { parsePlayersJson } from "@/lib/scoring";
 
 export async function PATCH(req: Request, ctx: { params: Promise<{ submissionId: string }> }) {
@@ -18,15 +18,20 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ submissionId:
       return NextResponse.json({ error: "Invalid players JSON." }, { status: 400 });
     }
 
-    const sub = await prisma.teamSubmission.findUnique({ where: { id: submissionId } });
+    const sub = await queryOne<{ id: string; memberId: string }>(
+      `SELECT id, "memberId" FROM "TeamSubmission" WHERE id = $1`,
+      [submissionId]
+    );
     if (!sub || sub.memberId !== memberId) {
       return NextResponse.json({ error: "Not found." }, { status: 404 });
     }
 
-    const updated = await prisma.teamSubmission.update({
-      where: { id: submissionId },
-      data: { playersJson },
-    });
+    await query(`UPDATE "TeamSubmission" SET "playersJson" = $1, "updatedAt" = NOW() WHERE id = $2`, [
+      playersJson,
+      submissionId,
+    ]);
+
+    const updated = await queryOne(`SELECT * FROM "TeamSubmission" WHERE id = $1`, [submissionId]);
 
     return NextResponse.json({ submission: updated });
   } catch (e) {

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { queryOne } from "@/lib/db";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ matchId: string }> }) {
   const { matchId } = await ctx.params;
-  const match = await prisma.match.findUnique({
-    where: { id: matchId },
-    select: { id: true, label: true, cricApiMatchId: true },
-  });
+  const match = await queryOne<{ id: string; label: string; cricApiMatchId: string | null }>(
+    `SELECT id, label, "cricApiMatchId" FROM "Match" WHERE id = $1`,
+    [matchId]
+  );
   if (!match) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
@@ -27,22 +27,34 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ matchId: stri
       return NextResponse.json({ error: "memberId is required." }, { status: 400 });
     }
 
-    const match = await prisma.match.findUnique({ where: { id: matchId } });
+    const match = await queryOne<{ id: string; leagueId: string }>(
+      `SELECT id, "leagueId" FROM "Match" WHERE id = $1`,
+      [matchId]
+    );
     if (!match) {
       return NextResponse.json({ error: "Not found." }, { status: 404 });
     }
 
-    const member = await prisma.member.findFirst({
-      where: { id: memberId, leagueId: match.leagueId },
-    });
+    const member = await queryOne<{ id: string }>(
+      `SELECT id FROM "Member" WHERE id = $1 AND "leagueId" = $2`,
+      [memberId, match.leagueId]
+    );
     if (!member) {
       return NextResponse.json({ error: "Not a member of this league." }, { status: 403 });
     }
 
-    const updated = await prisma.match.update({
-      where: { id: matchId },
-      data: { cricApiMatchId },
-    });
+    const updated = await queryOne<{
+      id: string;
+      label: string;
+      cricApiMatchId: string | null;
+    }>(
+      `UPDATE "Match" SET "cricApiMatchId" = $1 WHERE id = $2 RETURNING id, label, "cricApiMatchId"`,
+      [cricApiMatchId, matchId]
+    );
+
+    if (!updated) {
+      return NextResponse.json({ error: "Could not update match." }, { status: 500 });
+    }
 
     return NextResponse.json({
       id: updated.id,

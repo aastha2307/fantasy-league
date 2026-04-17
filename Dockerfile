@@ -12,7 +12,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
-# Dummy URL for prisma generate only (no DB connection during generate).
+# Optional: set DATABASE_URL if the build runs code that connects to Postgres.
 ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/iplfantasy"
 RUN mkdir -p /app/public/uploads
 RUN npm run build
@@ -22,7 +22,6 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 COPY package.json package-lock.json ./
-COPY prisma ./prisma
 RUN npm ci --omit=dev
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public

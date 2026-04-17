@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { queryOne, query } from "@/lib/db";
 
 export type GameRoomStandingsResult = {
   source: "screenshot";
@@ -16,16 +16,28 @@ export type GameRoomStandingsResult = {
 };
 
 export async function computeGameRoomStandings(roomId: string): Promise<GameRoomStandingsResult> {
-  const room = await prisma.gameRoom.findUnique({
-    where: { id: roomId },
-    include: { participants: { orderBy: { createdAt: "asc" } } },
-  });
+  const room = await queryOne<{
+    id: string;
+    label: string;
+    cricApiMatchId: string;
+    createdAt: Date;
+  }>(`SELECT * FROM "GameRoom" WHERE id = $1`, [roomId]);
 
   if (!room) {
     throw new Error("Room not found");
   }
 
-  const leaderboard: GameRoomStandingsResult["leaderboard"] = room.participants.map((p) => {
+  const participants = await query<{
+    id: string;
+    displayName: string;
+    ocrPoints: number | null;
+    imagePath: string | null;
+  }>(
+    `SELECT id, "displayName", "ocrPoints", "imagePath" FROM "GamePlayer" WHERE "roomId" = $1 ORDER BY "createdAt" ASC`,
+    [roomId]
+  );
+
+  const leaderboard: GameRoomStandingsResult["leaderboard"] = participants.map((p) => {
     const pts = p.ocrPoints;
     return {
       playerId: p.id,

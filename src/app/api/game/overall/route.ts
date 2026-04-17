@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { query } from "@/lib/db";
 import { TRACKED_PLAYERS, type TrackedPlayer } from "@/lib/tracked-players";
 
 export const dynamic = "force-dynamic";
@@ -49,14 +49,41 @@ for (const p of TRACKED_PLAYERS) {
 
 export async function GET() {
   try {
-    const rooms = await prisma.gameRoom.findMany({
-      include: {
-        participants: {
-          select: { displayName: true, ocrPoints: true, createdAt: true },
-        },
-      },
-      orderBy: { createdAt: "asc" },
-    });
+    const rooms = await query<{ id: string; label: string; cricApiMatchId: string; createdAt: Date }>(
+      `SELECT id, label, "cricApiMatchId", "createdAt" FROM "GameRoom" ORDER BY "createdAt" ASC`
+    );
+    const roomIds = rooms.map((r) => r.id);
+    const participantsRaw =
+      roomIds.length === 0
+        ? []
+        : await query<{
+            roomId: string;
+            displayName: string;
+            ocrPoints: number | null;
+            createdAt: Date;
+          }>(
+            `SELECT "roomId", "displayName", "ocrPoints", "createdAt" FROM "GamePlayer" WHERE "roomId" = ANY($1::text[])`,
+            [roomIds]
+          );
+
+    const byRoom = new Map<
+      string,
+      { displayName: string; ocrPoints: number | null; createdAt: Date }[]
+    >();
+    for (const p of participantsRaw) {
+      const list = byRoom.get(p.roomId) ?? [];
+      list.push({
+        displayName: p.displayName,
+        ocrPoints: p.ocrPoints,
+        createdAt: p.createdAt,
+      });
+      byRoom.set(p.roomId, list);
+    }
+
+    const roomsWithParticipants = rooms.map((r) => ({
+      ...r,
+      participants: byRoom.get(r.id) ?? [],
+    }));
 
     const standingMap = new Map<string, ParticipantStanding>();
     for (const p of TRACKED_PLAYERS) {
@@ -74,7 +101,7 @@ export async function GET() {
 
     const gameResults: OverallLeaderboardResponse["gameResults"] = [];
 
-    for (const room of rooms) {
+    for (const room of roomsWithParticipants) {
       const tracked = room.participants
         .map((x) => ({
           participant: participantByAlias.get(normalizeName(x.displayName)),

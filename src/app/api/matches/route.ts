@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { newId, queryOne } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -12,9 +12,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "leagueId, memberId, and label are required." }, { status: 400 });
     }
 
-    const member = await prisma.member.findFirst({
-      where: { id: memberId, leagueId },
-    });
+    const member = await queryOne<{ id: string }>(
+      `SELECT id FROM "Member" WHERE id = $1 AND "leagueId" = $2`,
+      [memberId, leagueId]
+    );
     if (!member) {
       return NextResponse.json({ error: "Not a member of this league." }, { status: 403 });
     }
@@ -22,13 +23,17 @@ export async function POST(req: Request) {
     const matchDate =
       matchDateRaw && matchDateRaw.length > 0 ? new Date(matchDateRaw) : null;
 
-    const match = await prisma.match.create({
-      data: {
+    const match = await queryOne(
+      `INSERT INTO "Match" (id, "leagueId", label, "matchDate")
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [
+        newId(),
         leagueId,
         label,
-        matchDate: matchDate && !Number.isNaN(matchDate.getTime()) ? matchDate : null,
-      },
-    });
+        matchDate && !Number.isNaN(matchDate.getTime()) ? matchDate : null,
+      ]
+    );
 
     return NextResponse.json(match);
   } catch (e) {

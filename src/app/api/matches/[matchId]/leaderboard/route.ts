@@ -1,19 +1,12 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { loadMatchStandingsBundle } from "@/lib/load-match";
 import { parsePlayersJson, scoreTeam } from "@/lib/scoring";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ matchId: string }> }) {
   try {
     const { matchId } = await ctx.params;
 
-    const match = await prisma.match.findUnique({
-      where: { id: matchId },
-      include: {
-        points: true,
-        teams: { include: { member: true } },
-        league: { include: { members: true } },
-      },
-    });
+    const match = await loadMatchStandingsBundle(matchId);
 
     if (!match) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });

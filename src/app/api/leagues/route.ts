@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { nanoid } from "nanoid";
-import { prisma } from "@/lib/prisma";
+import { newId, queryOneWith, withTransaction } from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -13,13 +13,26 @@ export async function POST(req: Request) {
 
     const joinCode = nanoid(8).toUpperCase();
 
-    const result = await prisma.$transaction(async (tx) => {
-      const league = await tx.league.create({
-        data: { name: leagueName, joinCode },
-      });
-      const member = await tx.member.create({
-        data: { leagueId: league.id, name: yourName },
-      });
+    const result = await withTransaction(async (tx) => {
+      const leagueId = newId();
+      const memberId = newId();
+      const league = await queryOneWith<{
+        id: string;
+        name: string;
+        joinCode: string;
+      }>(
+        tx,
+        `INSERT INTO "League" (id, name, "joinCode") VALUES ($1, $2, $3) RETURNING id, name, "joinCode"`,
+        [leagueId, leagueName, joinCode]
+      );
+      const member = await queryOneWith<{ id: string; name: string }>(
+        tx,
+        `INSERT INTO "Member" (id, "leagueId", name) VALUES ($1, $2, $3) RETURNING id, name`,
+        [memberId, leagueId, yourName]
+      );
+      if (!league || !member) {
+        throw new Error("Failed to create league or member");
+      }
       return { league, member };
     });
 

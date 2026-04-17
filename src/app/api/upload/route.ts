@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { newId, query, queryOne } from "@/lib/db";
 import { emptyTeam, processDream11Screenshot } from "@/lib/process-screenshot";
 import { parsePlayersJson } from "@/lib/scoring";
 
@@ -16,15 +16,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "file, matchId, and memberId are required." }, { status: 400 });
     }
 
-    const member = await prisma.member.findUnique({
-      where: { id: memberId },
-      include: { league: true },
-    });
+    const member = await queryOne<{ id: string; leagueId: string }>(
+      `SELECT id, "leagueId" FROM "Member" WHERE id = $1`,
+      [memberId]
+    );
     if (!member) {
       return NextResponse.json({ error: "Invalid member." }, { status: 403 });
     }
 
-    const match = await prisma.match.findUnique({ where: { id: matchId } });
+    const match = await queryOne<{ id: string; leagueId: string }>(
+      `SELECT id, "leagueId" FROM "Match" WHERE id = $1`,
+      [matchId]
+    );
     if (!match || match.leagueId !== member.leagueId) {
       return NextResponse.json({ error: "Invalid match." }, { status: 403 });
     }
@@ -32,9 +35,10 @@ export async function POST(req: Request) {
     const buf = Buffer.from(await file.arrayBuffer());
     const processed = await processDream11Screenshot(buf, matchId);
     const extracted = parsePlayersJson(processed.playersJson);
-    const prev = await prisma.teamSubmission.findUnique({
-      where: { memberId_matchId: { memberId, matchId } },
-    });
+    const prev = await queryOne<{ id: string; playersJson: string }>(
+      `SELECT id, "playersJson" FROM "TeamSubmission" WHERE "memberId" = $1 AND "matchId" = $2`,
+      [memberId, matchId]
+    );
     const prevTeam = prev ? parsePlayersJson(prev.playersJson) : null;
     const playersJson =
       extracted && extracted.players.length > 0
@@ -43,21 +47,53 @@ export async function POST(req: Request) {
           ? JSON.stringify(prevTeam)
           : emptyTeam;
 
-    const submission = await prisma.teamSubmission.upsert({
-      where: { memberId_matchId: { memberId, matchId } },
-      create: {
-        memberId,
-        matchId,
-        imagePath: processed.imagePublicPath,
-        ocrText: processed.ocrText,
-        playersJson,
-      },
-      update: {
-        imagePath: processed.imagePublicPath,
-        ocrText: processed.ocrText,
-        ...(extracted && extracted.players.length > 0 ? { playersJson } : {}),
-      },
-    });
+    const updatePlayers = Boolean(extracted && extracted.players.length > 0);
+
+    let submission: {
+      id: string;
+      imagePath: string | null;
+      ocrText: string | null;
+      playersJson: string;
+    };
+
+    if (prev) {
+      await query(
+        `UPDATE "TeamSubmission"
+         SET "imagePath" = $1,
+             "ocrText" = $2,
+             "playersJson" = CASE WHEN $3::boolean THEN $4 ELSE "playersJson" END,
+             "updatedAt" = NOW()
+         WHERE id = $5`,
+        [processed.imagePublicPath, processed.ocrText, updatePlayers, playersJson, prev.id]
+      );
+      const row = await queryOne<{
+        id: string;
+        imagePath: string | null;
+        ocrText: string | null;
+        playersJson: string;
+      }>(`SELECT id, "imagePath", "ocrText", "playersJson" FROM "TeamSubmission" WHERE id = $1`, [prev.id]);
+      if (!row) {
+        return NextResponse.json({ error: "Submission not found after update." }, { status: 500 });
+      }
+      submission = row;
+    } else {
+      const id = newId();
+      await query(
+        `INSERT INTO "TeamSubmission" (id, "memberId", "matchId", "imagePath", "ocrText", "playersJson")
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [id, memberId, matchId, processed.imagePublicPath, processed.ocrText, playersJson]
+      );
+      const row = await queryOne<{
+        id: string;
+        imagePath: string | null;
+        ocrText: string | null;
+        playersJson: string;
+      }>(`SELECT id, "imagePath", "ocrText", "playersJson" FROM "TeamSubmission" WHERE id = $1`, [id]);
+      if (!row) {
+        return NextResponse.json({ error: "Submission not found after insert." }, { status: 500 });
+      }
+      submission = row;
+    }
 
     return NextResponse.json({
       submission: {

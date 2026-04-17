@@ -1,3 +1,6 @@
+// Reference schema (historical Prisma format). Runtime access uses `pg` + `DATABASE_URL`.
+// Firebase Data Connect uses the *same* PostgreSQL database for GraphQL-defined tables (dataconnect/).
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

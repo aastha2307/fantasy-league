@@ -1,7 +1,7 @@
-# Firebase Data Connect — same Cloud SQL instance as Prisma (see apphosting.yaml).
+# Firebase Data Connect — same Cloud SQL instance as the Next.js app (`pg`, see apphosting.yaml).
 # Deploy: firebase deploy --only dataconnect --project ipl-fantasy-league-71959
 #
-# schemaValidation: COMPATIBLE — leaves existing Prisma tables untouched; only adds DC-managed tables.
+# schemaValidation: COMPATIBLE — leaves existing app tables untouched; only adds DC-managed tables.
 specVersion: "v1alpha"
 serviceId: "ipl-fantasy-league-71959-service"
 location: "asia-south1"

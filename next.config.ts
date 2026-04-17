@@ -12,7 +12,7 @@ const fromEnv =
 const allowedDevOrigins = [...new Set([...fromEnv, "192.168.1.4"])];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["tesseract.js", "@prisma/client"],
+  serverExternalPackages: ["tesseract.js", "pg"],
   ...(process.env.NODE_ENV !== "production"
     ? {
         allowedDevOrigins,

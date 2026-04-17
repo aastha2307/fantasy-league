@@ -1,5 +1,8 @@
 # Firebase App Hosting — https://firebase.google.com/docs/app-hosting
-# Database: Cloud SQL for PostgreSQL via Firebase Data Connect
+#
+# Database: Cloud SQL for PostgreSQL (same instance for everything below).
+# - App APIs use node-postgres (`pg`) → DATABASE_URL (games, leagues, rooms, etc.).
+# - Firebase Data Connect adds GraphQL + managed tables on that same DB (see dataconnect/).
 # Instance: ipl-fantasy-league-71959-instance (asia-south1)
 #
 # Secrets to set:
@@ -8,6 +11,9 @@
 #
 # DATABASE_URL format for Cloud SQL via Cloud Run:
 #   postgresql://USER:PASSWORD@/ipl-fantasy-league-71959-database?host=/cloudsql/ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
+#
+# Console (or apphosting.yaml below): set APP_URL to your live URL (BUILD + RUNTIME) for metadata.
+# Enable Firestore + Data Connect APIs in Google Cloud. Deploy Data Connect: firebase deploy --only dataconnect
 
 runConfig:
   memoryMiB: 1024
@@ -16,7 +22,7 @@ runConfig:
 
 scripts:
   buildCommand: npm run build
-  runCommand: sh -c "npx prisma db push && exec npm run start"
+  runCommand: exec npm run start
 
 env:
   - variable: CRICKET_API_KEY
@@ -25,3 +31,29 @@ env:
   - variable: DATABASE_URL
     secret: DATABASE_URL
     availability: [RUNTIME]
+  # Server / Data Connect (same project as dataconnect/dataconnect.yaml)
+  - variable: DATA_CONNECT_SERVICE_ID
+    value: ipl-fantasy-league-71959-service
+    availability: [RUNTIME]
+  - variable: DATA_CONNECT_LOCATION
+    value: asia-south1
+    availability: [RUNTIME]
+  # Client bundle — Firebase Web config (public; must be BUILD + RUNTIME for Next.js)
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyCWQ5AQjLMKm3bdtkV9SvFYBoQF_zrWp8Q
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: ipl-fantasy-league-71959.firebaseapp.com
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: ipl-fantasy-league-71959
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: ipl-fantasy-league-71959.firebasestorage.app
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "6454448286"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:6454448286:web:886fa7b0685880cb112b8f
+    availability: [BUILD, RUNTIME]
