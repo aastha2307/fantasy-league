@@ -28,6 +28,15 @@
     "react-dom": "19.2.4",
     "tesseract.js": "^7.0.0"
   },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-android-arm64": "4.2.2",
+    "@tailwindcss/oxide-darwin-arm64": "4.2.2",
+    "@tailwindcss/oxide-darwin-x64": "4.2.2",
+    "@tailwindcss/oxide-linux-x64-gnu": "4.2.2",
+    "@tailwindcss/oxide-linux-x64-musl": "4.2.2",
+    "@tailwindcss/oxide-win32-arm64-msvc": "4.2.2",
+    "@tailwindcss/oxide-win32-x64-msvc": "4.2.2"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/cuid": "^2.0.4",
