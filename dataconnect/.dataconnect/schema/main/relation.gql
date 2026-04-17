@@ -1,0 +1,6 @@
+extend type DcHealth {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "DcHealth", purpose: METADATA_FIELD)
+}

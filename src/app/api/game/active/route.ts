@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import { fetchIplSeriesMatches } from "@/lib/cricapi";
+import { prioritizeSeriesMatches, type CricCurrentMatch } from "@/lib/cricapi";
+import apiResponse from "@/app/api/cricket/current-matches/apiresponse.json";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,6 +16,10 @@ export type ActiveRoom = {
 /** Returns joinable game rooms with at least one participant, ordered newest first. */
 export async function GET() {
   try {
+    const localMatches = prioritizeSeriesMatches(
+      Array.isArray(apiResponse.matches) ? (apiResponse.matches as CricCurrentMatch[]) : []
+    );
+
     const [roomRows, matches] = await Promise.all([
       query<{
         id: string;
@@ -27,17 +32,14 @@ export async function GET() {
          FROM "GameRoom" gr
          ORDER BY gr."createdAt" DESC`
       ),
-      fetchIplSeriesMatches().catch(() => null),
+      Promise.resolve(localMatches),
     ]);
 
-    const activeMatchIds = matches
-      ? new Set(matches.filter((match) => !match.matchEnded).map((match) => match.id))
-      : null;
+    const activeMatchIds = new Set(matches.filter((match) => !match.matchEnded).map((match) => match.id));
 
     const filteredRooms = roomRows.filter((room) => {
       const pc = typeof room.playerCount === "string" ? parseInt(room.playerCount, 10) : room.playerCount;
       if (pc < 1) return false;
-      if (!activeMatchIds) return true;
       return activeMatchIds.has(room.cricApiMatchId);
     });
 

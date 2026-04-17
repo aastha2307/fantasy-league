@@ -1,0 +1,114 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `DcHealth` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  dcHealth_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: DcHealth_Data!
+  ): DcHealth_KeyOutput! @fdc_generated(from: "DcHealth", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `DcHealth` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  dcHealth_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [DcHealth_Data!]!
+  ): [DcHealth_KeyOutput!]! @fdc_generated(from: "DcHealth", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `DcHealth` into the table, based on the primary key. Returns the key of the newly inserted `DcHealth`.
+  """
+  dcHealth_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: DcHealth_Data!
+  ): DcHealth_KeyOutput! @fdc_generated(from: "DcHealth", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `DcHealth` objects into the table, based on the primary key. Returns the key of the newly inserted `DcHealth`.
+  """
+  dcHealth_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [DcHealth_Data!]!
+  ): [DcHealth_KeyOutput!]! @fdc_generated(from: "DcHealth", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `DcHealth` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  dcHealth_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DcHealth_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DcHealth_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: DcHealth_Data!
+  ): DcHealth_KeyOutput @fdc_generated(from: "DcHealth", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `DcHealth` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  dcHealth_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: DcHealth_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: DcHealth_Data!
+  ): Int! @fdc_generated(from: "DcHealth", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `DcHealth` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  dcHealth_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DcHealth_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DcHealth_FirstRow
+  ): DcHealth_KeyOutput @fdc_generated(from: "DcHealth", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `DcHealth` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  dcHealth_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: DcHealth_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "DcHealth", purpose: DELETE_MULTIPLE)
+}

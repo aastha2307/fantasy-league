@@ -1,0 +1,45 @@
+extend type Query {
+  """
+  ✨ Look up a single `DcHealth` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  dcHealth(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: DcHealth_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: DcHealth_FirstRow
+  ): DcHealth @fdc_generated(from: "DcHealth", purpose: QUERY_SINGLE)
+  """
+  ✨ List `DcHealth` objects in the table, optionally filtered by `where` conditions.
+  """
+  dcHealths(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: DcHealth_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [DcHealth_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [DcHealth!]! @fdc_generated(from: "DcHealth", purpose: QUERY_MULTIPLE)
+}

@@ -1,0 +1,19 @@
+I0417 17:08:26.485036     667 load.go:37] Reloading schema and connectors...
+I0417 17:08:26.531448     667 control.go:59] [/emulator/ipl-fantasy-league-71959-service 8735] UpdateResources(): done
+Schema: sources: schema/schema.gql [306B] 
+Connector "ipl-fantasy-connector": sources: ipl-fantasy-connector/queries.gql [195B] 
+I0417 17:08:26.550349     667 codegen.go:82] [connector "ipl-fantasy-connector" javascriptSdk] Generating sources into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+I0417 17:08:26.566557     667 collector.go:107] schema extensions wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/dataconnect/.dataconnect/schema"
+Generated sources: main/relation.gql [219B] prelude.gql [66094B] main/query.gql [1062B] main/mutation.gql [3337B] main/input.gql [3042B] 
+I0417 17:08:26.627729     667 collector.go:107] connector "ipl-fantasy-connector" javascriptSdk wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+Generated sources: index.d.ts [1169B] esm/index.esm.js [569B] esm/package.json [17B] index.cjs.js [644B] package.json [642B] README.md [7983B] 
+I0417 17:08:26.637824     667 installsdk.go:48] Package @ipl-fantasy/dataconnect is already installed. Skipping installation
+I0417 17:08:26.637965     667 load.go:115] Finished reloading
+I0417 17:08:26.642009     667 dev.go:95] Listening on address (HTTP + gRPC): 127.0.0.1:9399
+I0417 17:08:26.643036     667 dev.go:95] Listening on address (HTTP + gRPC): [::1]:9399
+I0417 17:08:29.050038     667 migrate.go:24] Running migration SQL:
+Step 1: CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+Step 2: CREATE TABLE "public"."dc_health" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "label" text NOT NULL, PRIMARY KEY ("id"))
+I0417 17:08:29.104270     667 control.go:59] [/emulator/ipl-fantasy-league-71959-service fd67] UpdateResources(): done
+Schema: sources: schema/schema.gql [306B] 
+Connector "ipl-fantasy-connector": sources: ipl-fantasy-connector/queries.gql [195B] 

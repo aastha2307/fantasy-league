@@ -4,13 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { formatMatchScheduleLabel } from "@/lib/format-match-date";
-import { sortMatchesForDisplay } from "@/lib/match-day-filter";
+import { filterMatchesToTodayAndYesterdayIst, sortMatchesForDisplay } from "@/lib/match-day-filter";
 import { setGamePlayerId } from "@/lib/storage";
 import { TRACKED_PLAYERS } from "@/lib/tracked-players";
 import type { ActiveRoom } from "@/app/api/game/active/route";
 import type { OverallLeaderboardResponse } from "@/app/api/game/overall/route";
-
-const MATCH_LIST_CACHE_KEY = "ipl-fantasy-ipl-series-matches-v2-today-yesterday";
+import apiResponse from "@/app/api/cricket/current-matches/apiresponse.json";
 
 type CricMatch = {
   id: string;
@@ -22,23 +21,17 @@ type CricMatch = {
   matchEnded?: boolean;
 };
 
-function pickFirstMatch(list: CricMatch[], setId: (id: string) => void, setLabel: (l: string) => void) {
-  const first = list[0];
-  if (first) {
-    setId(first.id);
-    setLabel(first.name);
-  } else {
-    setId("");
-    setLabel("");
-  }
-}
+const ALL_MATCHES: CricMatch[] = Array.isArray(apiResponse.matches)
+  ? (apiResponse.matches as CricMatch[])
+  : [];
+
+const TODAYS_MATCHES = sortMatchesForDisplay(filterMatchesToTodayAndYesterdayIst(ALL_MATCHES));
 
 export default function Home() {
   const router = useRouter();
-  const [matches, setMatches] = useState<CricMatch[]>([]);
-  const [matchesErr, setMatchesErr] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState("");
-  const [selectedLabel, setSelectedLabel] = useState("");
+  const [matches] = useState<CricMatch[]>(TODAYS_MATCHES);
+  const [selectedId, setSelectedId] = useState(TODAYS_MATCHES[0]?.id ?? "");
+  const [selectedLabel, setSelectedLabel] = useState(TODAYS_MATCHES[0]?.name ?? "");
   const [manualId, setManualId] = useState("");
   const [manualLabel, setManualLabel] = useState("");
   const [displayName, setDisplayName] = useState(TRACKED_PLAYERS[0]?.displayName ?? "");
@@ -50,7 +43,6 @@ export default function Home() {
     playerId: string;
     message: string;
   } | null>(null);
-  const [matchesLoading, setMatchesLoading] = useState(true);
   const [activeRooms, setActiveRooms] = useState<ActiveRoom[]>([]);
   const [activeRoomsLoading, setActiveRoomsLoading] = useState(true);
   const [overall, setOverall] = useState<OverallLeaderboardResponse | null>(null);
@@ -88,67 +80,6 @@ export default function Home() {
     })();
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    void (async () => {
-      const cached = typeof window !== "undefined" ? sessionStorage.getItem(MATCH_LIST_CACHE_KEY) : null;
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached) as { matches: CricMatch[]; error: string | null };
-          if (!cancelled) {
-            const list = sortMatchesForDisplay(parsed.matches);
-            setMatches(list);
-            setMatchesErr(parsed.error);
-            pickFirstMatch(list, setSelectedId, setSelectedLabel);
-          }
-        } catch {
-          sessionStorage.removeItem(MATCH_LIST_CACHE_KEY);
-        }
-      }
-
-      try {
-        const res = await fetch("/api/cricket/current-matches", { cache: "no-store" });
-        if (!res.ok) {
-          if (!cancelled) {
-            setMatchesErr(`Could not load matches (HTTP ${res.status}).`);
-          }
-          return;
-        }
-        const data = (await res.json()) as { matches?: unknown; error?: string };
-        const raw = Array.isArray(data.matches) ? (data.matches as CricMatch[]) : [];
-
-        const apiErr = typeof data.error === "string" ? data.error : null;
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem(MATCH_LIST_CACHE_KEY, JSON.stringify({ matches: raw, error: apiErr }));
-        }
-
-        if (cancelled) return;
-
-        const list = sortMatchesForDisplay(raw);
-        setMatches(list);
-        if (apiErr && raw.length === 0) {
-          setMatchesErr(apiErr);
-        } else {
-          setMatchesErr(null);
-        }
-        pickFirstMatch(list, setSelectedId, setSelectedLabel);
-      } catch (e) {
-        if (!cancelled) {
-          console.error("Match list fetch failed:", e);
-          setMatchesErr(e instanceof Error ? e.message : "Network error loading matches.");
-          setMatches([]);
-          pickFirstMatch([], setSelectedId, setSelectedLabel);
-        }
-      } finally {
-        if (!cancelled) setMatchesLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   function onPickMatch(id: string) {
     setSelectedId(id);
@@ -396,18 +327,12 @@ export default function Home() {
           <div>
             <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">IPL — today &amp; yesterday (IST)</h2>
             <p className="mt-1 text-sm text-zinc-500">
-              Matches are loaded from the bundled fixture list and limited to IST calendar today and yesterday. The list
-              is cached per browser tab; pick a match below or use manual ids if none appear.
+              Matches are loaded from the bundled fixture list and limited to IST calendar today and yesterday.
             </p>
-            {matchesErr && (
-              <p className="mt-2 text-sm text-amber-800 dark:text-amber-200">{matchesErr}</p>
-            )}
             <div className="mt-3 max-h-56 space-y-2 overflow-y-auto rounded-xl border border-zinc-200 p-2 dark:border-zinc-700">
               {matches.length === 0 ? (
                 <p className="px-2 py-3 text-sm text-zinc-500">
-                  {matchesLoading
-                    ? "Loading matches…"
-                    : "No IPL fixtures for today or yesterday (IST). Use manual ids below."}
+                  No IPL fixtures for today or yesterday (IST). Use manual ids below.
                 </p>
               ) : (
                 matches.map((m) => (
