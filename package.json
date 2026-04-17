@@ -11,7 +11,7 @@
     "kill:dev": "lsof -ti tcp:3000 | xargs kill 2>/dev/null || true",
     "build": "next build --webpack",
     "build:docker": "DOCKER_BUILD=1 next build",
-    "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
+    "start": "next start -H 0.0.0.0",
     "lint": "eslint",
     "db:inspect": "node scripts/db-inspect.mjs",
     "dataconnect:sdk:generate": "firebase dataconnect:sdk:generate"

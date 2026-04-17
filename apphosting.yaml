@@ -22,10 +22,10 @@ runConfig:
   cpu: 1
   concurrency: 20
 
-scripts:
-  # Use webpack (see package.json `build`); Turbopack builds can fail on some Cloud Build images.
-  buildCommand: npm run build
-  runCommand: exec npm run start
+# Do not set scripts.buildCommand / scripts.runCommand here unless you must.
+# Overriding buildCommand opts you out of Firebase's Next.js adapter, which can break
+# Cloud Run startup (PORT / health checks). Build is `npm run build` from package.json
+# (`next build --webpack`).
 
 env:
   # Avoid OOM during `next build` on constrained builders (exit 51 / non-zero build step).
