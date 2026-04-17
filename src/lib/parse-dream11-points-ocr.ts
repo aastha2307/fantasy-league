@@ -205,10 +205,58 @@ export function extractDream11TotalPointsFromOcr(raw: string): number | null {
 }
 
 /**
- * Best value for leaderboard: **sum of XI** when reliable, else **team total** heuristic.
+ * Finds every occurrence of "NUMBER Pts" (case-insensitive) in the OCR text and
+ * returns the maximum. Dream11 shows the team total in the header (e.g. "619.5 Pts")
+ * and individual player base-points below (e.g. "178 Pts"). The team total is always
+ * the largest value because it includes the captain ×2 and vice-captain ×1.5 bonuses.
+ *
+ * Handles common OCR artefacts:
+ *   - "B619.5Pts"  → leading noise before digits is ignored by the regex
+ *   - "7:5Pts"     → colon-as-decimal is normalised to "7.5" first
+ *   - "619 . 5Pts" → spaces around decimal are collapsed first
+ *   - "5915Pts"    → OCR drops the decimal in "591.5"; detected as 4-digit before Pts,
+ *                    divided by 10 when result is in a plausible team-total range (150–1500)
+ */
+export function extractPointsNextToPtsLabel(raw: string): number | null {
+  // Normalise OCR decimal noise: "7:5" → "7.5", "619 . 5" → "619.5"
+  const s = raw.replace(/(\d)\s*[.:]\s*(\d)/g, (_m, a: string, b: string) => `${a}.${b}`);
+  const re = /(\d{1,5}(?:\.\d{1,2})?)\s*[Pp][Tt][Ss]/g;
+  let m: RegExpExecArray | null;
+  const vals: number[] = [];
+  while ((m = re.exec(s)) !== null) {
+    let v = parseFloat(m[1]);
+    // 4-5 digit integer before "Pts": OCR likely dropped a decimal point (e.g. 5915 → 591.5)
+    if (Number.isInteger(v) && v >= 1000 && v <= 19999) {
+      const candidate = v / 10;
+      if (candidate >= 150 && candidate <= 1500) v = candidate;
+      else continue; // not a plausible team total even after correction
+    }
+    if (v > 0 && v <= 1500) vals.push(v);
+  }
+  if (!vals.length) return null;
+  return Math.max(...vals);
+}
+
+/**
+ * Best value for leaderboard:
+ * 1. Max of all "NUMBER Pts" labels in the screenshot (most reliable — captures the
+ *    prominent team-total header that Dream11 displays, e.g. "619.5 Pts").
+ * 2. Fallback: heuristic team-total scan (for screenshots without explicit "Pts" labels).
+ * 3. Last resort: sum of playing-XI rows (lower than real total — no cap/vc multipliers).
  */
 export function extractDream11PointsBestEffort(raw: string): number | null {
-  const bySum = sumDream11PlayingXiPointsFromOcr(raw);
-  if (bySum !== null) return bySum;
-  return extractDream11TotalPointsFromOcr(raw);
+  const byPtsLabel = extractPointsNextToPtsLabel(raw);
+  if (byPtsLabel !== null) {
+    const byXiSum = sumDream11PlayingXiPointsFromOcr(raw);
+    if (byXiSum !== null && byXiSum > byPtsLabel) {
+      const diff = roundPts(byXiSum - byPtsLabel);
+      // OCR can drop the leading "6" as "5" in header totals (e.g. 608.5 -> 508.5).
+      // If XI rows produce a plausible value about 100 points higher, prefer XI sum.
+      if (diff >= 90 && diff <= 110) return byXiSum;
+    }
+    return byPtsLabel;
+  }
+  const byTotal = extractDream11TotalPointsFromOcr(raw);
+  if (byTotal !== null) return byTotal;
+  return sumDream11PlayingXiPointsFromOcr(raw);
 }

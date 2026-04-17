@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Firestore security rules — adjust before production if clients read/write directly.
+// Server routes use the Admin SDK and ignore these rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /app/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

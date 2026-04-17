@@ -1,0 +1,159 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { TRACKED_PLAYERS, type TrackedPlayer } from "@/lib/tracked-players";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type ParticipantStanding = {
+  key: string;
+  displayName: string;
+  personName: string;
+  matchesPlayed: number;
+  wins: number;
+  rewardPoints: number;
+  totalPoints: number;
+  avgPoints: number;
+};
+
+export type OverallLeaderboardResponse = {
+  participants: ParticipantStanding[];
+  gameResults: {
+    roomId: string;
+    label: string;
+    first: {
+      displayName: string;
+      personName: string;
+      points: number;
+      rewardPoints: number;
+    };
+    second: {
+      displayName: string;
+      personName: string;
+      points: number;
+      rewardPoints: number;
+    } | null;
+  }[];
+};
+
+function normalizeName(s: string): string {
+  return s.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+const participantByAlias = new Map<string, TrackedPlayer>();
+for (const p of TRACKED_PLAYERS) {
+  for (const alias of p.aliases) {
+    participantByAlias.set(normalizeName(alias), p);
+  }
+}
+
+export async function GET() {
+  try {
+    const rooms = await prisma.gameRoom.findMany({
+      include: {
+        participants: {
+          select: { displayName: true, ocrPoints: true, createdAt: true },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const standingMap = new Map<string, ParticipantStanding>();
+    for (const p of TRACKED_PLAYERS) {
+      standingMap.set(p.key, {
+        key: p.key,
+        displayName: p.displayName,
+        personName: p.personName,
+        matchesPlayed: 0,
+        wins: 0,
+        rewardPoints: 0,
+        totalPoints: 0,
+        avgPoints: 0,
+      });
+    }
+
+    const gameResults: OverallLeaderboardResponse["gameResults"] = [];
+
+    for (const room of rooms) {
+      const tracked = room.participants
+        .map((x) => ({
+          participant: participantByAlias.get(normalizeName(x.displayName)),
+          ocrPoints: x.ocrPoints ?? 0,
+          createdAt: x.createdAt,
+        }))
+        .filter(
+          (x): x is { participant: TrackedPlayer; ocrPoints: number; createdAt: Date } =>
+            !!x.participant && x.ocrPoints != null
+        );
+
+      if (tracked.length === 0) continue;
+
+      for (const row of tracked) {
+        const s = standingMap.get(row.participant.key);
+        if (!s) continue;
+        s.matchesPlayed += 1;
+        s.totalPoints = Math.round((s.totalPoints + row.ocrPoints) * 100) / 100;
+      }
+
+      tracked.sort((a, b) => {
+        if (b.ocrPoints !== a.ocrPoints) return b.ocrPoints - a.ocrPoints;
+        return a.createdAt.getTime() - b.createdAt.getTime();
+      });
+
+      const winner = tracked[0];
+      const ws = standingMap.get(winner.participant.key);
+      if (ws) {
+        ws.wins += 1;
+        ws.rewardPoints += 120;
+      }
+
+      const runnerUp = tracked[1] ?? null;
+      if (runnerUp) {
+        const rs = standingMap.get(runnerUp.participant.key);
+        if (rs) rs.rewardPoints += 60;
+      }
+
+      gameResults.push({
+        roomId: room.id,
+        label: room.label,
+        first: {
+          displayName: winner.participant.displayName,
+          personName: winner.participant.personName,
+          points: winner.ocrPoints,
+          rewardPoints: 120,
+        },
+        second: runnerUp
+          ? {
+              displayName: runnerUp.participant.displayName,
+              personName: runnerUp.participant.personName,
+              points: runnerUp.ocrPoints,
+              rewardPoints: 60,
+            }
+          : null,
+      });
+    }
+
+    const participants = Array.from(standingMap.values()).map((x) => ({
+      ...x,
+      avgPoints: x.matchesPlayed > 0 ? Math.round((x.totalPoints / x.matchesPlayed) * 100) / 100 : 0,
+    }));
+
+    participants.sort((a, b) => {
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      if (b.rewardPoints !== a.rewardPoints) return b.rewardPoints - a.rewardPoints;
+      if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
+      if (b.avgPoints !== a.avgPoints) return b.avgPoints - a.avgPoints;
+      return a.displayName.localeCompare(b.displayName);
+    });
+
+    gameResults.reverse();
+
+    return NextResponse.json({ participants, gameResults } as OverallLeaderboardResponse);
+  } catch (e) {
+    console.error("GET /api/game/overall:", e);
+    return NextResponse.json(
+      { participants: [], gameResults: [] } as OverallLeaderboardResponse,
+      { status: 500 }
+    );
+  }
+}

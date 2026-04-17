@@ -1,0 +1,7 @@
+# Used by generated web SDK; Admin API can also run arbitrary reads against the schema.
+query DcListHealth($limit: Int) @auth(level: PUBLIC) {
+  dcHealths(limit: $limit) {
+    id
+    label
+  }
+}

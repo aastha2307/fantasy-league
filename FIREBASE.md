@@ -2,6 +2,50 @@
 
 This app targets **[Firebase App Hosting](https://firebase.google.com/docs/app-hosting)** (Next.js on Cloud Run). The repo includes [`apphosting.yaml`](./apphosting.yaml).
 
+**Firebase Data Connect** is configured under [`dataconnect/`](./dataconnect/) and [`firebase.json`](./firebase.json). It uses the **same Cloud SQL for PostgreSQL** instance as Prisma (`DATABASE_URL`). `schemaValidation: COMPATIBLE` means Data Connect adds its own tables (e.g. `dc_health`) and does **not** remove existing Prisma tables.
+
+### “Deploying Data Connect schemas…” then `Error: An unexpected error has occurred`
+
+The CLI opens a **direct PostgreSQL connection** to your Cloud SQL instance (port **5432**) to migrate the schema. If that step fails, the log usually shows **`read ECONNRESET`** (connection dropped). That is a **network access** issue, not a problem with your `.gql` files.
+
+**Fix (pick one):**
+
+1. **Allow your current public IP on Cloud SQL** (most common for local deploys):
+   - Google Cloud Console → **SQL** → instance **`ipl-fantasy-league-71959-instance`** → **Connections** → **Networking**.
+   - Ensure **Public IP** is enabled for the instance.
+   - Under **Authorized networks**, **Add network**: name e.g. `laptop`, **Network** = your public IP in CIDR form, e.g. `203.0.113.48/32`. (Find your IP with `curl -s https://ifconfig.me` or visit [ifconfig.me](https://ifconfig.me).)
+   - Save, wait a minute, then run `firebase deploy --only dataconnect` again.
+
+2. **Deploy from [Google Cloud Shell](https://shell.cloud.google.com/)** (same GCP project): clone or upload this repo, `cd` into `ipl-fantasy`, run `npm i` if needed, then `firebase deploy --only dataconnect`. Cloud Shell’s egress can reach Cloud SQL without your home IP allowlist in many setups.
+
+3. **VPN / corporate Wi‑Fi** often blocks outbound **5432**. Try another network or Cloud Shell.
+
+4. See verbose logs: `DEBUG=* firebase deploy --only dataconnect --project YOUR_PROJECT_ID 2>&1 | tee /tmp/dc.log` and search for `ECONNRESET` or `timeout`.
+
+---
+
+1. **Deploy the Data Connect service** (after `firebase login` and with the correct project):
+
+   ```bash
+   firebase deploy --only dataconnect --project YOUR_PROJECT_ID
+   ```
+
+2. **Regenerate the typed web SDK** when you change schema or connector operations:
+
+   ```bash
+   npm run dataconnect:sdk:generate
+   ```
+
+3. **Smoke test** the Admin → Data Connect path (requires the service deployed and Application Default Credentials locally, or runs automatically on App Hosting):
+
+   - `GET /api/dataconnect/health` — returns `{ ok: true, dataConnect: { dcHealths: [...] } }` when the GraphQL read succeeds.
+
+If deploy still fails after fixing Cloud SQL access (see **“Deploying Data Connect schemas…”** above), capture logs with `DEBUG=* firebase deploy --only dataconnect --project YOUR_PROJECT_ID 2>&1 | tee /tmp/dataconnect-deploy.log`.
+
+The generated client package is `@ipl-fantasy/dataconnect` (see `package.json` `file:src/lib/dataconnect-sdk`). In the browser, use `getDataConnect(firebaseApp, connectorConfig)` from `firebase/data-connect` (see [`FirebaseDbPanel`](./src/components/FirebaseDbPanel.tsx) and the [`/firebase`](./src/app/firebase/page.tsx) page).
+
+**Cloud Firestore** uses [`firestore.rules`](./firestore.rules). Deploy rules with `firebase deploy --only firestore`. The API route `GET /api/firebase/app-settings` reads `app/settings` with the Admin SDK (enable Firestore in the Firebase console if you have not already).
+
 **Billing:** App Hosting requires the Firebase project to be on the **Blaze (pay-as-you-go)** plan (Cloud Run + build infrastructure). [Upgrade in the console](https://console.firebase.google.com/) if `firebase apphosting:*` commands ask you to upgrade.
 
 ## Push code (GitHub → Firebase)

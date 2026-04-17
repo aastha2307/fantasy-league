@@ -1,0 +1,7 @@
+connectorId: ipl-fantasy-connector
+authMode: PUBLIC
+generate:
+  javascriptSdk:
+    package: "@ipl-fantasy/dataconnect"
+    outputDir: ../../src/lib/dataconnect-sdk
+    packageJsonDir: ../..

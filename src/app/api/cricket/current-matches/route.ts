@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import { fetchIplSeriesMatches } from "@/lib/cricapi";
+import type { CricCurrentMatch } from "@/lib/cricapi";
+import { filterMatchesToTodayAndYesterdayIst, sortMatchesForDisplay } from "@/lib/match-day-filter";
+import apiResponse from "./apiresponse.json";
 
-/** IPL fixtures only (series_info + IPL series id). Query ?all=1 not supported — list is always IPL-focused. */
+/** IPL fixtures from bundled `apiresponse.json`; only IST calendar today and yesterday. */
 export async function GET() {
   try {
-    const matches = await fetchIplSeriesMatches();
+    const raw = Array.isArray(apiResponse.matches)
+      ? (apiResponse.matches as CricCurrentMatch[])
+      : [];
+    const filtered = filterMatchesToTodayAndYesterdayIst(raw);
+    const matches = sortMatchesForDisplay(filtered);
     return NextResponse.json({ matches, seriesFilter: "IPL" as const });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Could not load matches.";

@@ -1,0 +1,7 @@
+# Minimal table so Data Connect can attach to your Cloud SQL DB without overlapping Prisma models.
+# Table name is prefixed to avoid collisions with app tables.
+type DcHealth
+  @table(name: "dc_health", singular: "dcHealth", plural: "dcHealths") {
+  id: UUID! @default(expr: "uuidV4()")
+  label: String!
+}

@@ -233,12 +233,13 @@ export default function GameLeaderboardPage() {
 
         <section>
           <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Leaderboard</h2>
-          <p className="mt-1 text-sm text-zinc-500">Sorted by fantasy points. Expand a row to see the screenshot.</p>
+          <p className="mt-1 text-sm text-zinc-500">Sorted by fantasy points. Prize money is shown for 1st and 2nd place.</p>
 
           <ul className="mt-4 space-y-2">
             {data.leaderboard.map((row, index) => {
               const isMe = myId === row.playerId;
               const isOpen = expanded[row.playerId] ?? false;
+              const prize = index === 0 ? 120 : index === 1 ? 80 : null;
               return (
                 <li
                   key={row.playerId}
@@ -277,6 +278,15 @@ export default function GameLeaderboardPage() {
                         <span className="mt-0.5 block text-xs text-amber-700 dark:text-amber-400">
                           No points from screenshot — use home join with image or edit your total
                         </span>
+                      )}
+                    </span>
+                    <span className="w-20 shrink-0 text-right">
+                      {prize !== null ? (
+                        <span className="inline-block rounded-lg bg-amber-50 px-2.5 py-1 font-mono text-sm font-semibold text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
+                          Rs {prize}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-zinc-400 dark:text-zinc-500">-</span>
                       )}
                     </span>
                     <span className="font-mono text-lg tabular-nums text-emerald-700 dark:text-emerald-400">

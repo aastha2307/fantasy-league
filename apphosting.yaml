@@ -1,10 +1,13 @@
 # Firebase App Hosting — https://firebase.google.com/docs/app-hosting
-# See FIREBASE.md for setup. Console env vars override values here.
+# Database: Cloud SQL for PostgreSQL via Firebase Data Connect
+# Instance: ipl-fantasy-league-71959-instance (asia-south1)
 #
-# Create secrets (names must match):
-#   firebase apphosting:secrets:set CRICKET_API_KEY --project YOUR_PROJECT_ID
-#   firebase apphosting:secrets:set DATABASE_URL --project YOUR_PROJECT_ID
-# Set APP_URL in the Firebase console (BUILD + RUNTIME) to your live URL, e.g. https://<backend>--<project>.web.app
+# Secrets to set:
+#   firebase apphosting:secrets:set CRICKET_API_KEY
+#   firebase apphosting:secrets:set DATABASE_URL
+#
+# DATABASE_URL format for Cloud SQL via Cloud Run:
+#   postgresql://USER:PASSWORD@/ipl-fantasy-league-71959-database?host=/cloudsql/ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
 
 runConfig:
   memoryMiB: 1024
