@@ -5,9 +5,11 @@
 # - Firebase Data Connect adds GraphQL + managed tables on that same DB (see dataconnect/).
 # Instance: ipl-fantasy-league-71959-instance (asia-south1)
 #
-# Secrets to set:
-#   firebase apphosting:secrets:set CRICKET_API_KEY
-#   firebase apphosting:secrets:set DATABASE_URL
+# Secrets to set (then grant the App Hosting backend access — names must match `env.secret` below):
+#   firebase apphosting:secrets:set CRICKET_API_KEY --project ipl-fantasy-league-71959
+#   firebase apphosting:secrets:set DATABASE_URL --project ipl-fantasy-league-71959
+#   firebase apphosting:secrets:grantaccess CRICKET_API_KEY --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
+#   firebase apphosting:secrets:grantaccess DATABASE_URL --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
 #
 # DATABASE_URL format for Cloud SQL via Cloud Run:
 #   postgresql://USER:PASSWORD@/ipl-fantasy-league-71959-database?host=/cloudsql/ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
@@ -21,10 +23,15 @@ runConfig:
   concurrency: 20
 
 scripts:
+  # Use webpack (see package.json `build`); Turbopack builds can fail on some Cloud Build images.
   buildCommand: npm run build
   runCommand: exec npm run start
 
 env:
+  # Avoid OOM during `next build` on constrained builders (exit 51 / non-zero build step).
+  - variable: NODE_OPTIONS
+    value: --max-old-space-size=4096
+    availability: [BUILD]
   - variable: CRICKET_API_KEY
     secret: CRICKET_API_KEY
     availability: [RUNTIME]
