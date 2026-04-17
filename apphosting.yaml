@@ -11,8 +11,14 @@
 #   firebase apphosting:secrets:grantaccess CRICKET_API_KEY --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
 #   firebase apphosting:secrets:grantaccess DATABASE_URL --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
 #
-# DATABASE_URL format for Cloud SQL via Cloud Run:
+# DATABASE_URL format for Cloud SQL via Cloud Run (Unix socket — requires instance attached to Cloud Run):
 #   postgresql://USER:PASSWORD@/ipl-fantasy-league-71959-database?host=/cloudsql/ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
+#
+# If API routes return 500, attach this instance to the App Hosting Cloud Run service (socket path only works then):
+#   gcloud run services list --project=ipl-fantasy-league-71959 --region=asia-southeast1
+#   gcloud run services update SERVICE_NAME --region=asia-southeast1 --project=ipl-fantasy-league-71959 \
+#     --add-cloudsql-instances=ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
+# Re-deploy after; if a rollout overwrites this, add the connection in Cloud Run → service → Edit → Connections.
 #
 # Console (or apphosting.yaml below): set APP_URL to your live URL (BUILD + RUNTIME) for metadata.
 # Enable Firestore + Data Connect APIs in Google Cloud. Deploy Data Connect: firebase deploy --only dataconnect

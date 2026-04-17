@@ -5,7 +5,8 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   max: 15,
   idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 10_000,
+  /** Cloud SQL first connection can be slow; avoid failing API routes too early on cold start. */
+  connectionTimeoutMillis: 20_000,
 });
 
 export type Queryable = Pool | PoolClient;

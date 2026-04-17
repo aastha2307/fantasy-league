@@ -138,7 +138,7 @@ Console variables **override** [`apphosting.yaml`](./apphosting.yaml).
 
 ## What the config does
 
-- **`runCommand`** in `apphosting.yaml` starts the Next.js server with `npm run start`. Apply or migrate the database schema separately (e.g. against a dump or your existing Cloud SQL) so tables match [`docs/schema.prisma`](./docs/schema.prisma).
+- The App Hosting **Next.js adapter** runs `npm run start` from `package.json` unless you override scripts (not recommended). Apply or migrate the database schema separately (e.g. against Cloud SQL) so tables match [`docs/schema.prisma`](./docs/schema.prisma).
 - **Memory** is set to 1024 MiB to leave headroom for OCR (Tesseract). Increase if you see OOM errors.
 
 ## Uploads / screenshots
@@ -149,6 +149,28 @@ Dream11 screenshots are saved under `public/uploads` on the **local disk**. On A
 - Later, move uploads to **Firebase Storage** or another object store and store URLs in the database.
 
 ## Troubleshooting
+
+### API routes return 500 (e.g. `/api/game/active`, `/api/game/overall`)
+
+These handlers use **`pg`** and **`DATABASE_URL`**. Open **`GET /api/health`** on your live site: if **`checks.postgresql`** is `"error"`, Postgres is not reachable from Cloud Run.
+
+**Cloud SQL (same project as this app)** — if `DATABASE_URL` uses the **Unix socket** form from [`apphosting.yaml`](./apphosting.yaml) (`host=/cloudsql/PROJECT:REGION:INSTANCE`), the **Cloud Run service must have that Cloud SQL instance attached**. Otherwise the socket path does not exist in the container and every query fails.
+
+1. [Cloud Run](https://console.cloud.google.com/run?project=ipl-fantasy-league-71959) → select the App Hosting service in **`asia-southeast1`** (often named like your backend, e.g. `fantasy-league`) → **Edit & deploy new revision** → **Connections** → **Add connection** → choose instance **`ipl-fantasy-league-71959-instance`**, or use:
+
+   ```bash
+   gcloud run services list --project=ipl-fantasy-league-71959 --region=asia-southeast1
+   gcloud run services update SERVICE_NAME --region=asia-southeast1 --project=ipl-fantasy-league-71959 \
+     --add-cloudsql-instances=ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
+   ```
+
+2. Ensure the **runtime service account** used by that Cloud Run service has **`roles/cloudsql.client`** on the project (often granted when you add the connection in the console).
+
+3. Confirm the **`DATABASE_URL`** secret matches the [socket URL format](./apphosting.yaml) (correct DB name, user, password).
+
+4. **Schema**: tables such as `GameRoom` must exist on that database (apply [`sql/init-schema.sql`](./sql/init-schema.sql) or your migration against Cloud SQL if you have not already).
+
+**Alternative without Unix socket:** use a **`DATABASE_URL`** that points at **private IP** (with [`vpcAccess`](https://firebase.google.com/docs/app-hosting/vpc-network) in `apphosting.yaml`) or a **hosted Postgres** URL with TLS (`?sslmode=require`) and network access from Cloud Run.
 
 - **Database connection errors**: Check `DATABASE_URL` (network access from Cloud Run to your DB, SSL params, IP allowlist if used).
 - **Build fails**: Ensure `npm run build` works locally with `DATABASE_URL` set to the same kind of Postgres URL.
