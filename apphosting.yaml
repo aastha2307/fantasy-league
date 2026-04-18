@@ -6,9 +6,7 @@
 # Instance: ipl-fantasy-league-71959-instance (asia-south1)
 #
 # Secrets to set (then grant the App Hosting backend access — names must match `env.secret` below):
-#   firebase apphosting:secrets:set CRICKET_API_KEY --project ipl-fantasy-league-71959
 #   firebase apphosting:secrets:set DATABASE_URL --project ipl-fantasy-league-71959
-#   firebase apphosting:secrets:grantaccess CRICKET_API_KEY --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
 #   firebase apphosting:secrets:grantaccess DATABASE_URL --backend fantasy-league --location asia-southeast1 --project ipl-fantasy-league-71959
 #
 # DATABASE_URL format for Cloud SQL via Cloud Run (Unix socket — requires instance attached to Cloud Run):
@@ -38,9 +36,6 @@ env:
   - variable: NODE_OPTIONS
     value: --max-old-space-size=4096
     availability: [BUILD]
-  - variable: CRICKET_API_KEY
-    secret: CRICKET_API_KEY
-    availability: [RUNTIME]
   - variable: DATABASE_URL
     secret: DATABASE_URL
     availability: [RUNTIME]

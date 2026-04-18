@@ -280,7 +280,7 @@ export default function MatchPage() {
         )}
 
         <section className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Live match (Cricket Data)</h2>
+          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Match points</h2>
           <p className="mt-1 text-sm text-zinc-500">
             Cricbuzz does not expose a public API. This app uses{" "}
             <a
@@ -291,10 +291,7 @@ export default function MatchPage() {
             >
               Cricket Data (CricAPI)
             </a>{" "}
-            — add <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">CRICKET_API_KEY</code> to{" "}
-            <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">.env</code> on the server, restart{" "}
-            <code className="rounded bg-zinc-100 px-1 dark:bg-zinc-800">npm run dev</code>, then pick the IPL
-            match here.
+            data bundled in this app, plus manual Dream11 points when you upload them.
           </p>
 
           {live?.apiError && (

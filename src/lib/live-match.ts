@@ -1,10 +1,8 @@
-import { fetchMatchInfo, fetchMatchScorecard } from "@/lib/cricapi";
 import { loadMatchStandingsBundle } from "@/lib/load-match";
-import { scorecardJsonToPlayerPoints } from "@/lib/scorecard-to-points";
 import { parsePlayersJson, scoreTeam } from "@/lib/scoring";
 
 export type LiveStandingsResult = {
-  source: "live" | "manual" | "none";
+  source: "manual" | "none";
   cricApiMatchId: string | null;
   apiStatus: string | null;
   apiError: string | null;
@@ -35,37 +33,14 @@ export async function computeLiveStandings(matchId: string): Promise<LiveStandin
 
   let pointsRows: { playerName: string; points: number }[] = [];
   let source: LiveStandingsResult["source"] = "none";
-  let apiError: string | null = null;
+  const apiError: string | null = null;
   let apiStatus: string | null = null;
 
   const manualRows = match.points.map((p) => ({ playerName: p.playerName, points: p.points }));
 
-  if (match.cricApiMatchId && process.env.CRICKET_API_KEY) {
-    try {
-      const raw = await fetchMatchScorecard(match.cricApiMatchId);
-      pointsRows = scorecardJsonToPlayerPoints(raw);
-      if (pointsRows.length === 0) {
-        apiError =
-          "Live scorecard returned no player rows. The API layout may have changed, or the match id is wrong.";
-        pointsRows = manualRows;
-        source = manualRows.length ? "manual" : "none";
-      } else {
-        source = "live";
-        const info = await fetchMatchInfo(match.cricApiMatchId);
-        apiStatus = info?.status ?? null;
-      }
-    } catch (e) {
-      apiError = e instanceof Error ? e.message : "Live fetch failed";
-      pointsRows = manualRows;
-      source = manualRows.length ? "manual" : "none";
-    }
-  } else {
-    pointsRows = manualRows;
-    source = manualRows.length ? "manual" : "none";
-    if (match.cricApiMatchId && !process.env.CRICKET_API_KEY) {
-      apiError = "CRICKET_API_KEY is not set on the server.";
-    }
-  }
+  // App runs in local-data mode: scores come from stored/manual points rows only.
+  pointsRows = manualRows;
+  source = manualRows.length ? "manual" : "none";
 
   const byMember = new Map(match.teams.map((t) => [t.memberId, t]));
 
