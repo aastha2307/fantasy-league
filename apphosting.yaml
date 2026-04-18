@@ -25,6 +25,8 @@ runConfig:
   memoryMiB: 1024
   cpu: 1
   concurrency: 20
+  cloudSqlInstances:
+    - ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
 
 # Do not set scripts.buildCommand / scripts.runCommand here unless you must.
 # Overriding buildCommand opts you out of Firebase's Next.js adapter, which can break
