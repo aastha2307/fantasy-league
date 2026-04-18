@@ -16,14 +16,26 @@ type CheckStatus = "ok" | "error";
 
 export async function GET() {
   const checks: Record<string, { status: CheckStatus; detail?: string }> = {};
+  const databaseUrl = process.env.DATABASE_URL ?? "";
+  const dbEnvInfo = {
+    present: databaseUrl.length > 0,
+    usesCloudSqlSocket:
+      databaseUrl.includes("/cloudsql/") ||
+      databaseUrl.includes("%2Fcloudsql%2F") ||
+      databaseUrl.includes("host=/cloudsql") ||
+      databaseUrl.includes("host=%2Fcloudsql"),
+  };
 
   try {
     await queryOne(`SELECT 1 AS ok`);
-    checks.postgresql = { status: "ok", detail: "node-postgres → Cloud SQL" };
+    checks.postgresql = {
+      status: "ok",
+      detail: `node-postgres -> Cloud SQL (DATABASE_URL present=${dbEnvInfo.present}, socket=${dbEnvInfo.usesCloudSqlSocket})`,
+    };
   } catch (e) {
     checks.postgresql = {
       status: "error",
-      detail: e instanceof Error ? e.message : "PostgreSQL query failed",
+      detail: `${e instanceof Error ? e.message : "PostgreSQL query failed"} (DATABASE_URL present=${dbEnvInfo.present}, socket=${dbEnvInfo.usesCloudSqlSocket})`,
     };
   }
 
