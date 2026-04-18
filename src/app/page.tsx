@@ -478,7 +478,7 @@ export default function Home() {
           </Link>{" "}
           (create/join with a code) ·{" "}
           <Link href="/firebase" className="text-emerald-700 underline dark:text-emerald-400">
-            Firebase (Firestore + Data Connect)
+            Firebase (Data Connect)
           </Link>
         </p>
       </div>

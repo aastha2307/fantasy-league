@@ -17,3 +17,32 @@ Step 2: CREATE TABLE "public"."dc_health" ("id" uuid NOT NULL DEFAULT uuid_gener
 I0417 17:08:29.104270     667 control.go:59] [/emulator/ipl-fantasy-league-71959-service fd67] UpdateResources(): done
 Schema: sources: schema/schema.gql [306B] 
 Connector "ipl-fantasy-connector": sources: ipl-fantasy-connector/queries.gql [195B] 
+I0418 15:40:26.850357     667 load.go:37] Reloading schema and connectors...
+I0418 15:40:26.938278     667 migrate.go:24] Running migration SQL:
+Step 1: CREATE TABLE "public"."GamePlayer" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "displayName" text NOT NULL, "imagePath" text NULL, "ocrPoints" double precision NULL, "ocrText" text NULL, "playersJson" text NOT NULL, "roomId" text NOT NULL, PRIMARY KEY ("id"))
+Step 2: CREATE TABLE "public"."GameRoom" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "cricApiMatchId" text NOT NULL, "label" text NOT NULL, PRIMARY KEY ("id"))
+Step 3: CREATE TABLE "public"."League" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "joinCode" text NOT NULL, "name" text NOT NULL, PRIMARY KEY ("id"))
+Step 4: CREATE TABLE "public"."Match" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "cricApiMatchId" text NULL, "label" text NOT NULL, "leagueId" text NOT NULL, "matchDate" timestamptz NULL, PRIMARY KEY ("id"))
+Step 5: CREATE TABLE "public"."Member" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "leagueId" text NOT NULL, "name" text NOT NULL, PRIMARY KEY ("id"))
+Step 6: CREATE TABLE "public"."PlayerMatchPoints" ("id" text NOT NULL, "matchId" text NOT NULL, "playerName" text NOT NULL, "points" double precision NOT NULL, PRIMARY KEY ("id"))
+Step 7: CREATE TABLE "public"."TeamSubmission" ("id" text NOT NULL, "createdAt" timestamptz NOT NULL, "imagePath" text NULL, "matchId" text NOT NULL, "memberId" text NOT NULL, "ocrText" text NULL, "playersJson" text NOT NULL, "updatedAt" timestamptz NOT NULL, PRIMARY KEY ("id"))
+I0418 15:40:27.011361     667 control.go:59] [/emulator/ipl-fantasy-league-71959-service fd67] UpdateResources(): done
+Schema: sources: schema/schema.gql [2582B] 
+Connector "ipl-fantasy-connector": sources: ipl-fantasy-connector/queries.gql [195B] 
+I0418 15:40:27.036114     667 codegen.go:82] [connector "ipl-fantasy-connector" javascriptSdk] Generating sources into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+I0418 15:40:27.045872     667 collector.go:107] schema extensions wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [66094B] main/input.gql [37964B] main/relation.gql [1772B] main/query.gql [9306B] main/mutation.gql [28641B] 
+I0418 15:40:27.062906     667 collector.go:107] connector "ipl-fantasy-connector" javascriptSdk wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+Generated sources: package.json [642B] README.md [7983B] index.d.ts [1749B] esm/index.esm.js [569B] esm/package.json [17B] index.cjs.js [644B] 
+I0418 15:40:27.080427     667 installsdk.go:48] Package @ipl-fantasy/dataconnect is already installed. Skipping installation
+I0418 15:40:27.080506     667 load.go:115] Finished reloading
+I0418 15:40:34.033508     667 load.go:37] Reloading schema and connectors...
+I0418 15:40:34.138784     667 control.go:59] [/emulator/ipl-fantasy-league-71959-service fd67] UpdateResources(): done
+Connector "ipl-fantasy-connector": sources: ipl-fantasy-connector/queries.gql [948B] 
+I0418 15:40:34.161025     667 codegen.go:82] [connector "ipl-fantasy-connector" javascriptSdk] Generating sources into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+I0418 15:40:34.178548     667 collector.go:107] schema extensions wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [66094B] main/input.gql [37964B] main/relation.gql [1772B] main/query.gql [9306B] main/mutation.gql [28641B] 
+I0418 15:40:34.184238     667 collector.go:107] connector "ipl-fantasy-connector" javascriptSdk wrote into "/Users/aastha.awasthi/Documents/Fantasy/ipl-fantasy/src/lib/dataconnect-sdk"
+Generated sources: esm/index.esm.js [1957B] esm/package.json [17B] index.cjs.js [2172B] package.json [642B] README.md [24294B] index.d.ts [5292B] 
+I0418 15:40:34.192728     667 installsdk.go:48] Package @ipl-fantasy/dataconnect is already installed. Skipping installation
+I0418 15:40:34.192766     667 load.go:115] Finished reloading

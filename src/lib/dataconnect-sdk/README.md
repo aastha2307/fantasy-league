@@ -4,6 +4,10 @@
   - [*Connecting to the local Emulator*](#connecting-to-the-local-emulator)
 - [**Queries**](#queries)
   - [*DcListHealth*](#dclisthealth)
+  - [*ListGameRooms*](#listgamerooms)
+  - [*ListGamePlayers*](#listgameplayers)
+  - [*ListLeagues*](#listleagues)
+  - [*ListMatches*](#listmatches)
 - [**Mutations**](#mutations)
 
 # Generated TypeScript README
@@ -156,6 +160,417 @@ console.log(data.dcHealths);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.dcHealths);
+});
+```
+
+## ListGameRooms
+You can execute the `ListGameRooms` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-sdk/index.d.ts](./index.d.ts):
+```javascript
+listGameRooms(vars?: ListGameRoomsVariables): QueryPromise<ListGameRoomsData, ListGameRoomsVariables>;
+
+listGameRoomsRef(vars?: ListGameRoomsVariables): QueryRef<ListGameRoomsData, ListGameRoomsVariables>;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```javascript
+listGameRooms(dc: DataConnect, vars?: ListGameRoomsVariables): QueryPromise<ListGameRoomsData, ListGameRoomsVariables>;
+
+listGameRoomsRef(dc: DataConnect, vars?: ListGameRoomsVariables): QueryRef<ListGameRoomsData, ListGameRoomsVariables>;
+```
+
+### Variables
+The `ListGameRooms` query has an optional argument of type `ListGameRoomsVariables`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+
+```javascript
+export interface ListGameRoomsVariables {
+  limit?: number | null;
+}
+```
+### Return Type
+Recall that executing the `ListGameRooms` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListGameRoomsData`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+```javascript
+export interface ListGameRoomsData {
+  gameRooms: ({
+    id: string;
+    cricApiMatchId: string;
+    label: string;
+    createdAt: TimestampString;
+  } & GameRoom_Key)[];
+}
+```
+### Using `ListGameRooms`'s action shortcut function
+
+```javascript
+import { getDataConnect, DataConnect } from 'firebase/data-connect';
+import { connectorConfig, listGameRooms, ListGameRoomsVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListGameRooms` query has an optional argument of type `ListGameRoomsVariables`:
+const listGameRoomsVars: ListGameRoomsVariables = {
+  limit: ..., // optional
+};
+
+// Call the `listGameRooms()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listGameRooms(listGameRoomsVars);
+// Variables can be defined inline as well.
+const { data } = await listGameRooms({ limit: ..., });
+// Since all variables are optional for this query, you can omit the `ListGameRoomsVariables` argument.
+const { data } = await listGameRooms();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listGameRooms(dataConnect, listGameRoomsVars);
+
+console.log(data.gameRooms);
+
+// Or, you can use the `Promise` API.
+listGameRooms(listGameRoomsVars).then((response) => {
+  const data = response.data;
+  console.log(data.gameRooms);
+});
+```
+
+### Using `ListGameRooms`'s `QueryRef` function
+
+```javascript
+import { getDataConnect, DataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listGameRoomsRef, ListGameRoomsVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListGameRooms` query has an optional argument of type `ListGameRoomsVariables`:
+const listGameRoomsVars: ListGameRoomsVariables = {
+  limit: ..., // optional
+};
+
+// Call the `listGameRoomsRef()` function to get a reference to the query.
+const ref = listGameRoomsRef(listGameRoomsVars);
+// Variables can be defined inline as well.
+const ref = listGameRoomsRef({ limit: ..., });
+// Since all variables are optional for this query, you can omit the `ListGameRoomsVariables` argument.
+const ref = listGameRoomsRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listGameRoomsRef(dataConnect, listGameRoomsVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.gameRooms);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.gameRooms);
+});
+```
+
+## ListGamePlayers
+You can execute the `ListGamePlayers` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-sdk/index.d.ts](./index.d.ts):
+```javascript
+listGamePlayers(vars: ListGamePlayersVariables): QueryPromise<ListGamePlayersData, ListGamePlayersVariables>;
+
+listGamePlayersRef(vars: ListGamePlayersVariables): QueryRef<ListGamePlayersData, ListGamePlayersVariables>;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```javascript
+listGamePlayers(dc: DataConnect, vars: ListGamePlayersVariables): QueryPromise<ListGamePlayersData, ListGamePlayersVariables>;
+
+listGamePlayersRef(dc: DataConnect, vars: ListGamePlayersVariables): QueryRef<ListGamePlayersData, ListGamePlayersVariables>;
+```
+
+### Variables
+The `ListGamePlayers` query requires an argument of type `ListGamePlayersVariables`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+
+```javascript
+export interface ListGamePlayersVariables {
+  roomId: string;
+  limit?: number | null;
+}
+```
+### Return Type
+Recall that executing the `ListGamePlayers` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListGamePlayersData`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+```javascript
+export interface ListGamePlayersData {
+  gamePlayers: ({
+    id: string;
+    displayName: string;
+    ocrPoints?: number | null;
+    createdAt: TimestampString;
+  } & GamePlayer_Key)[];
+}
+```
+### Using `ListGamePlayers`'s action shortcut function
+
+```javascript
+import { getDataConnect, DataConnect } from 'firebase/data-connect';
+import { connectorConfig, listGamePlayers, ListGamePlayersVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListGamePlayers` query requires an argument of type `ListGamePlayersVariables`:
+const listGamePlayersVars: ListGamePlayersVariables = {
+  roomId: ..., 
+  limit: ..., // optional
+};
+
+// Call the `listGamePlayers()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listGamePlayers(listGamePlayersVars);
+// Variables can be defined inline as well.
+const { data } = await listGamePlayers({ roomId: ..., limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listGamePlayers(dataConnect, listGamePlayersVars);
+
+console.log(data.gamePlayers);
+
+// Or, you can use the `Promise` API.
+listGamePlayers(listGamePlayersVars).then((response) => {
+  const data = response.data;
+  console.log(data.gamePlayers);
+});
+```
+
+### Using `ListGamePlayers`'s `QueryRef` function
+
+```javascript
+import { getDataConnect, DataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listGamePlayersRef, ListGamePlayersVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListGamePlayers` query requires an argument of type `ListGamePlayersVariables`:
+const listGamePlayersVars: ListGamePlayersVariables = {
+  roomId: ..., 
+  limit: ..., // optional
+};
+
+// Call the `listGamePlayersRef()` function to get a reference to the query.
+const ref = listGamePlayersRef(listGamePlayersVars);
+// Variables can be defined inline as well.
+const ref = listGamePlayersRef({ roomId: ..., limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listGamePlayersRef(dataConnect, listGamePlayersVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.gamePlayers);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.gamePlayers);
+});
+```
+
+## ListLeagues
+You can execute the `ListLeagues` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-sdk/index.d.ts](./index.d.ts):
+```javascript
+listLeagues(vars?: ListLeaguesVariables): QueryPromise<ListLeaguesData, ListLeaguesVariables>;
+
+listLeaguesRef(vars?: ListLeaguesVariables): QueryRef<ListLeaguesData, ListLeaguesVariables>;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```javascript
+listLeagues(dc: DataConnect, vars?: ListLeaguesVariables): QueryPromise<ListLeaguesData, ListLeaguesVariables>;
+
+listLeaguesRef(dc: DataConnect, vars?: ListLeaguesVariables): QueryRef<ListLeaguesData, ListLeaguesVariables>;
+```
+
+### Variables
+The `ListLeagues` query has an optional argument of type `ListLeaguesVariables`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+
+```javascript
+export interface ListLeaguesVariables {
+  limit?: number | null;
+}
+```
+### Return Type
+Recall that executing the `ListLeagues` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListLeaguesData`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+```javascript
+export interface ListLeaguesData {
+  leagues: ({
+    id: string;
+    name: string;
+    joinCode: string;
+    createdAt: TimestampString;
+  } & League_Key)[];
+}
+```
+### Using `ListLeagues`'s action shortcut function
+
+```javascript
+import { getDataConnect, DataConnect } from 'firebase/data-connect';
+import { connectorConfig, listLeagues, ListLeaguesVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListLeagues` query has an optional argument of type `ListLeaguesVariables`:
+const listLeaguesVars: ListLeaguesVariables = {
+  limit: ..., // optional
+};
+
+// Call the `listLeagues()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listLeagues(listLeaguesVars);
+// Variables can be defined inline as well.
+const { data } = await listLeagues({ limit: ..., });
+// Since all variables are optional for this query, you can omit the `ListLeaguesVariables` argument.
+const { data } = await listLeagues();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listLeagues(dataConnect, listLeaguesVars);
+
+console.log(data.leagues);
+
+// Or, you can use the `Promise` API.
+listLeagues(listLeaguesVars).then((response) => {
+  const data = response.data;
+  console.log(data.leagues);
+});
+```
+
+### Using `ListLeagues`'s `QueryRef` function
+
+```javascript
+import { getDataConnect, DataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listLeaguesRef, ListLeaguesVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListLeagues` query has an optional argument of type `ListLeaguesVariables`:
+const listLeaguesVars: ListLeaguesVariables = {
+  limit: ..., // optional
+};
+
+// Call the `listLeaguesRef()` function to get a reference to the query.
+const ref = listLeaguesRef(listLeaguesVars);
+// Variables can be defined inline as well.
+const ref = listLeaguesRef({ limit: ..., });
+// Since all variables are optional for this query, you can omit the `ListLeaguesVariables` argument.
+const ref = listLeaguesRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listLeaguesRef(dataConnect, listLeaguesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.leagues);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.leagues);
+});
+```
+
+## ListMatches
+You can execute the `ListMatches` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect-sdk/index.d.ts](./index.d.ts):
+```javascript
+listMatches(vars: ListMatchesVariables): QueryPromise<ListMatchesData, ListMatchesVariables>;
+
+listMatchesRef(vars: ListMatchesVariables): QueryRef<ListMatchesData, ListMatchesVariables>;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```javascript
+listMatches(dc: DataConnect, vars: ListMatchesVariables): QueryPromise<ListMatchesData, ListMatchesVariables>;
+
+listMatchesRef(dc: DataConnect, vars: ListMatchesVariables): QueryRef<ListMatchesData, ListMatchesVariables>;
+```
+
+### Variables
+The `ListMatches` query requires an argument of type `ListMatchesVariables`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+
+```javascript
+export interface ListMatchesVariables {
+  leagueId: string;
+  limit?: number | null;
+}
+```
+### Return Type
+Recall that executing the `ListMatches` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `ListMatchesData`, which is defined in [dataconnect-sdk/index.d.ts](./index.d.ts). It has the following fields:
+```javascript
+export interface ListMatchesData {
+  matches: ({
+    id: string;
+    label: string;
+    matchDate?: TimestampString | null;
+    cricApiMatchId?: string | null;
+    createdAt: TimestampString;
+  } & Match_Key)[];
+}
+```
+### Using `ListMatches`'s action shortcut function
+
+```javascript
+import { getDataConnect, DataConnect } from 'firebase/data-connect';
+import { connectorConfig, listMatches, ListMatchesVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListMatches` query requires an argument of type `ListMatchesVariables`:
+const listMatchesVars: ListMatchesVariables = {
+  leagueId: ..., 
+  limit: ..., // optional
+};
+
+// Call the `listMatches()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await listMatches(listMatchesVars);
+// Variables can be defined inline as well.
+const { data } = await listMatches({ leagueId: ..., limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await listMatches(dataConnect, listMatchesVars);
+
+console.log(data.matches);
+
+// Or, you can use the `Promise` API.
+listMatches(listMatchesVars).then((response) => {
+  const data = response.data;
+  console.log(data.matches);
+});
+```
+
+### Using `ListMatches`'s `QueryRef` function
+
+```javascript
+import { getDataConnect, DataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, listMatchesRef, ListMatchesVariables } from '@ipl-fantasy/dataconnect';
+
+// The `ListMatches` query requires an argument of type `ListMatchesVariables`:
+const listMatchesVars: ListMatchesVariables = {
+  leagueId: ..., 
+  limit: ..., // optional
+};
+
+// Call the `listMatchesRef()` function to get a reference to the query.
+const ref = listMatchesRef(listMatchesVars);
+// Variables can be defined inline as well.
+const ref = listMatchesRef({ leagueId: ..., limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = listMatchesRef(dataConnect, listMatchesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.matches);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.matches);
 });
 ```
 

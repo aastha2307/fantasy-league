@@ -5,6 +5,48 @@ It has the same format as `DcHealth_Key`, but is only used as mutation return va
 """
 scalar DcHealth_KeyOutput
 """
+✨ `GamePlayer_KeyOutput` returns the primary key fields of table type `GamePlayer`.
+
+It has the same format as `GamePlayer_Key`, but is only used as mutation return value.
+"""
+scalar GamePlayer_KeyOutput
+"""
+✨ `GameRoom_KeyOutput` returns the primary key fields of table type `GameRoom`.
+
+It has the same format as `GameRoom_Key`, but is only used as mutation return value.
+"""
+scalar GameRoom_KeyOutput
+"""
+✨ `League_KeyOutput` returns the primary key fields of table type `League`.
+
+It has the same format as `League_Key`, but is only used as mutation return value.
+"""
+scalar League_KeyOutput
+"""
+✨ `Match_KeyOutput` returns the primary key fields of table type `Match`.
+
+It has the same format as `Match_Key`, but is only used as mutation return value.
+"""
+scalar Match_KeyOutput
+"""
+✨ `Member_KeyOutput` returns the primary key fields of table type `Member`.
+
+It has the same format as `Member_Key`, but is only used as mutation return value.
+"""
+scalar Member_KeyOutput
+"""
+✨ `PlayerMatchPoints_KeyOutput` returns the primary key fields of table type `PlayerMatchPoints`.
+
+It has the same format as `PlayerMatchPoints_Key`, but is only used as mutation return value.
+"""
+scalar PlayerMatchPoints_KeyOutput
+"""
+✨ `TeamSubmission_KeyOutput` returns the primary key fields of table type `TeamSubmission`.
+
+It has the same format as `TeamSubmission_Key`, but is only used as mutation return value.
+"""
+scalar TeamSubmission_KeyOutput
+"""
 ✨ Generated data input type for table 'DcHealth'. It includes all necessary fields for creating or upserting rows into table.
 """
 input DcHealth_Data {
@@ -101,4 +143,1106 @@ input DcHealth_Order {
   ✨ Generated from Field `DcHealth`.`label` of type `String!`
   """
   label: OrderDirection
+}
+"""
+✨ Generated data input type for table 'GamePlayer'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input GamePlayer_Data {
+  """
+  ✨ Generated from Field `GamePlayer`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `GamePlayer`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
+  """
+  displayName: String
+  """
+  ✨ `_expr` server value variant of `displayName` (✨ Generated from Field `GamePlayer`.`displayName` of type `String!`)
+  """
+  displayName_expr: String_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`imagePath` of type `String`
+  """
+  imagePath: String
+  """
+  ✨ `_expr` server value variant of `imagePath` (✨ Generated from Field `GamePlayer`.`imagePath` of type `String`)
+  """
+  imagePath_expr: String_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrPoints` of type `Float`
+  """
+  ocrPoints: Float
+  """
+  ✨ `_expr` server value variant of `ocrPoints` (✨ Generated from Field `GamePlayer`.`ocrPoints` of type `Float`)
+  """
+  ocrPoints_expr: Float_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrText` of type `String`
+  """
+  ocrText: String
+  """
+  ✨ `_expr` server value variant of `ocrText` (✨ Generated from Field `GamePlayer`.`ocrText` of type `String`)
+  """
+  ocrText_expr: String_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`playersJson` of type `String!`
+  """
+  playersJson: String
+  """
+  ✨ `_expr` server value variant of `playersJson` (✨ Generated from Field `GamePlayer`.`playersJson` of type `String!`)
+  """
+  playersJson_expr: String_Expr
+  """
+  ✨ Generated from Field `GamePlayer`.`roomId` of type `String!`
+  """
+  roomId: String
+  """
+  ✨ `_expr` server value variant of `roomId` (✨ Generated from Field `GamePlayer`.`roomId` of type `String!`)
+  """
+  roomId_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'GamePlayer'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input GamePlayer_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [GamePlayer_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: GamePlayer_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [GamePlayer_Filter!]
+  """
+  ✨ Generated from Field `GamePlayer`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
+  """
+  displayName: String_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`imagePath` of type `String`
+  """
+  imagePath: String_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrPoints` of type `Float`
+  """
+  ocrPoints: Float_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrText` of type `String`
+  """
+  ocrText: String_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`playersJson` of type `String!`
+  """
+  playersJson: String_Filter
+  """
+  ✨ Generated from Field `GamePlayer`.`roomId` of type `String!`
+  """
+  roomId: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'GamePlayer'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input GamePlayer_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [GamePlayer_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: GamePlayer_Filter
+}
+"""
+✨ Generated key input type for table 'GamePlayer'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input GamePlayer_Key {
+  """
+  ✨ Generated from Field `GamePlayer`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `GamePlayer`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'GamePlayer'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input GamePlayer_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: GamePlayer_Filter
+}
+"""
+✨ Generated order input type for table 'GamePlayer'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input GamePlayer_Order {
+  """
+  ✨ Generated from Field `GamePlayer`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
+  """
+  displayName: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`imagePath` of type `String`
+  """
+  imagePath: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrPoints` of type `Float`
+  """
+  ocrPoints: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`ocrText` of type `String`
+  """
+  ocrText: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`playersJson` of type `String!`
+  """
+  playersJson: OrderDirection
+  """
+  ✨ Generated from Field `GamePlayer`.`roomId` of type `String!`
+  """
+  roomId: OrderDirection
+}
+"""
+✨ Generated data input type for table 'GameRoom'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input GameRoom_Data {
+  """
+  ✨ Generated from Field `GameRoom`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `GameRoom`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
+  """
+  cricApiMatchId: String
+  """
+  ✨ `_expr` server value variant of `cricApiMatchId` (✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`)
+  """
+  cricApiMatchId_expr: String_Expr
+  """
+  ✨ Generated from Field `GameRoom`.`label` of type `String!`
+  """
+  label: String
+  """
+  ✨ `_expr` server value variant of `label` (✨ Generated from Field `GameRoom`.`label` of type `String!`)
+  """
+  label_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'GameRoom'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input GameRoom_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [GameRoom_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: GameRoom_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [GameRoom_Filter!]
+  """
+  ✨ Generated from Field `GameRoom`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
+  """
+  cricApiMatchId: String_Filter
+  """
+  ✨ Generated from Field `GameRoom`.`label` of type `String!`
+  """
+  label: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'GameRoom'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input GameRoom_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [GameRoom_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: GameRoom_Filter
+}
+"""
+✨ Generated key input type for table 'GameRoom'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input GameRoom_Key {
+  """
+  ✨ Generated from Field `GameRoom`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `GameRoom`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'GameRoom'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input GameRoom_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: GameRoom_Filter
+}
+"""
+✨ Generated order input type for table 'GameRoom'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input GameRoom_Order {
+  """
+  ✨ Generated from Field `GameRoom`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
+  """
+  cricApiMatchId: OrderDirection
+  """
+  ✨ Generated from Field `GameRoom`.`label` of type `String!`
+  """
+  label: OrderDirection
+}
+"""
+✨ Generated data input type for table 'League'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input League_Data {
+  """
+  ✨ Generated from Field `League`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `League`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `League`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `League`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `League`.`joinCode` of type `String!`
+  """
+  joinCode: String
+  """
+  ✨ `_expr` server value variant of `joinCode` (✨ Generated from Field `League`.`joinCode` of type `String!`)
+  """
+  joinCode_expr: String_Expr
+  """
+  ✨ Generated from Field `League`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `League`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'League'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input League_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [League_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: League_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [League_Filter!]
+  """
+  ✨ Generated from Field `League`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `League`.`joinCode` of type `String!`
+  """
+  joinCode: String_Filter
+  """
+  ✨ Generated from Field `League`.`name` of type `String!`
+  """
+  name: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'League'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input League_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [League_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: League_Filter
+}
+"""
+✨ Generated key input type for table 'League'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input League_Key {
+  """
+  ✨ Generated from Field `League`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `League`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'League'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input League_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: League_Filter
+}
+"""
+✨ Generated order input type for table 'League'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input League_Order {
+  """
+  ✨ Generated from Field `League`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `League`.`joinCode` of type `String!`
+  """
+  joinCode: OrderDirection
+  """
+  ✨ Generated from Field `League`.`name` of type `String!`
+  """
+  name: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Match'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Match_Data {
+  """
+  ✨ Generated from Field `Match`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Match`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
+  """
+  cricApiMatchId: String
+  """
+  ✨ `_expr` server value variant of `cricApiMatchId` (✨ Generated from Field `Match`.`cricApiMatchId` of type `String`)
+  """
+  cricApiMatchId_expr: String_Expr
+  """
+  ✨ Generated from Field `Match`.`label` of type `String!`
+  """
+  label: String
+  """
+  ✨ `_expr` server value variant of `label` (✨ Generated from Field `Match`.`label` of type `String!`)
+  """
+  label_expr: String_Expr
+  """
+  ✨ Generated from Field `Match`.`leagueId` of type `String!`
+  """
+  leagueId: String
+  """
+  ✨ `_expr` server value variant of `leagueId` (✨ Generated from Field `Match`.`leagueId` of type `String!`)
+  """
+  leagueId_expr: String_Expr
+  """
+  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
+  """
+  matchDate: Timestamp
+  """
+  ✨ `_expr` server value variant of `matchDate` (✨ Generated from Field `Match`.`matchDate` of type `Timestamp`)
+  """
+  matchDate_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `matchDate` (✨ Generated from Field `Match`.`matchDate` of type `Timestamp`)
+  """
+  matchDate_time: Timestamp_Relative
+}
+"""
+✨ Generated filter input type for table 'Match'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Match_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Match_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Match_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Match_Filter!]
+  """
+  ✨ Generated from Field `Match`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
+  """
+  cricApiMatchId: String_Filter
+  """
+  ✨ Generated from Field `Match`.`label` of type `String!`
+  """
+  label: String_Filter
+  """
+  ✨ Generated from Field `Match`.`leagueId` of type `String!`
+  """
+  leagueId: String_Filter
+  """
+  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
+  """
+  matchDate: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'Match'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Match_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Match_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Match_Filter
+}
+"""
+✨ Generated key input type for table 'Match'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Match_Key {
+  """
+  ✨ Generated from Field `Match`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Match`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'Match'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Match_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Match_Filter
+}
+"""
+✨ Generated order input type for table 'Match'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Match_Order {
+  """
+  ✨ Generated from Field `Match`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
+  """
+  cricApiMatchId: OrderDirection
+  """
+  ✨ Generated from Field `Match`.`label` of type `String!`
+  """
+  label: OrderDirection
+  """
+  ✨ Generated from Field `Match`.`leagueId` of type `String!`
+  """
+  leagueId: OrderDirection
+  """
+  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
+  """
+  matchDate: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Member'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Member_Data {
+  """
+  ✨ Generated from Field `Member`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Member`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `Member`.`leagueId` of type `String!`
+  """
+  leagueId: String
+  """
+  ✨ `_expr` server value variant of `leagueId` (✨ Generated from Field `Member`.`leagueId` of type `String!`)
+  """
+  leagueId_expr: String_Expr
+  """
+  ✨ Generated from Field `Member`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Member`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Member'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Member_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Member_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Member_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Member_Filter!]
+  """
+  ✨ Generated from Field `Member`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Member`.`leagueId` of type `String!`
+  """
+  leagueId: String_Filter
+  """
+  ✨ Generated from Field `Member`.`name` of type `String!`
+  """
+  name: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'Member'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Member_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Member_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Member_Filter
+}
+"""
+✨ Generated key input type for table 'Member'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Member_Key {
+  """
+  ✨ Generated from Field `Member`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Member`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'Member'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Member_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Member_Filter
+}
+"""
+✨ Generated order input type for table 'Member'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Member_Order {
+  """
+  ✨ Generated from Field `Member`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Member`.`leagueId` of type `String!`
+  """
+  leagueId: OrderDirection
+  """
+  ✨ Generated from Field `Member`.`name` of type `String!`
+  """
+  name: OrderDirection
+}
+"""
+✨ Generated data input type for table 'PlayerMatchPoints'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input PlayerMatchPoints_Data {
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`matchId` of type `String!`
+  """
+  matchId: String
+  """
+  ✨ `_expr` server value variant of `matchId` (✨ Generated from Field `PlayerMatchPoints`.`matchId` of type `String!`)
+  """
+  matchId_expr: String_Expr
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`playerName` of type `String!`
+  """
+  playerName: String
+  """
+  ✨ `_expr` server value variant of `playerName` (✨ Generated from Field `PlayerMatchPoints`.`playerName` of type `String!`)
+  """
+  playerName_expr: String_Expr
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`points` of type `Float!`
+  """
+  points: Float
+  """
+  ✨ `_expr` server value variant of `points` (✨ Generated from Field `PlayerMatchPoints`.`points` of type `Float!`)
+  """
+  points_expr: Float_Expr
+}
+"""
+✨ Generated filter input type for table 'PlayerMatchPoints'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PlayerMatchPoints_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [PlayerMatchPoints_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: PlayerMatchPoints_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [PlayerMatchPoints_Filter!]
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`matchId` of type `String!`
+  """
+  matchId: String_Filter
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`playerName` of type `String!`
+  """
+  playerName: String_Filter
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`points` of type `Float!`
+  """
+  points: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'PlayerMatchPoints'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input PlayerMatchPoints_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [PlayerMatchPoints_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: PlayerMatchPoints_Filter
+}
+"""
+✨ Generated key input type for table 'PlayerMatchPoints'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input PlayerMatchPoints_Key {
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'PlayerMatchPoints'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input PlayerMatchPoints_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: PlayerMatchPoints_Filter
+}
+"""
+✨ Generated order input type for table 'PlayerMatchPoints'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input PlayerMatchPoints_Order {
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`matchId` of type `String!`
+  """
+  matchId: OrderDirection
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`playerName` of type `String!`
+  """
+  playerName: OrderDirection
+  """
+  ✨ Generated from Field `PlayerMatchPoints`.`points` of type `Float!`
+  """
+  points: OrderDirection
+}
+"""
+✨ Generated data input type for table 'TeamSubmission'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input TeamSubmission_Data {
+  """
+  ✨ Generated from Field `TeamSubmission`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `TeamSubmission`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
+  """
+  imagePath: String
+  """
+  ✨ `_expr` server value variant of `imagePath` (✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`)
+  """
+  imagePath_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`matchId` of type `String!`
+  """
+  matchId: String
+  """
+  ✨ `_expr` server value variant of `matchId` (✨ Generated from Field `TeamSubmission`.`matchId` of type `String!`)
+  """
+  matchId_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`memberId` of type `String!`
+  """
+  memberId: String
+  """
+  ✨ `_expr` server value variant of `memberId` (✨ Generated from Field `TeamSubmission`.`memberId` of type `String!`)
+  """
+  memberId_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`ocrText` of type `String`
+  """
+  ocrText: String
+  """
+  ✨ `_expr` server value variant of `ocrText` (✨ Generated from Field `TeamSubmission`.`ocrText` of type `String`)
+  """
+  ocrText_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`
+  """
+  playersJson: String
+  """
+  ✨ `_expr` server value variant of `playersJson` (✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`)
+  """
+  playersJson_expr: String_Expr
+  """
+  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_time: Timestamp_Relative
+}
+"""
+✨ Generated filter input type for table 'TeamSubmission'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input TeamSubmission_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [TeamSubmission_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: TeamSubmission_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [TeamSubmission_Filter!]
+  """
+  ✨ Generated from Field `TeamSubmission`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
+  """
+  imagePath: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`matchId` of type `String!`
+  """
+  matchId: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`memberId` of type `String!`
+  """
+  memberId: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`ocrText` of type `String`
+  """
+  ocrText: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`
+  """
+  playersJson: String_Filter
+  """
+  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'TeamSubmission'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input TeamSubmission_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [TeamSubmission_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: TeamSubmission_Filter
+}
+"""
+✨ Generated key input type for table 'TeamSubmission'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input TeamSubmission_Key {
+  """
+  ✨ Generated from Field `TeamSubmission`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `TeamSubmission`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'TeamSubmission'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input TeamSubmission_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: TeamSubmission_Filter
+}
+"""
+✨ Generated order input type for table 'TeamSubmission'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input TeamSubmission_Order {
+  """
+  ✨ Generated from Field `TeamSubmission`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
+  """
+  imagePath: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`matchId` of type `String!`
+  """
+  matchId: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`memberId` of type `String!`
+  """
+  memberId: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`ocrText` of type `String`
+  """
+  ocrText: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`
+  """
+  playersJson: OrderDirection
+  """
+  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: OrderDirection
 }

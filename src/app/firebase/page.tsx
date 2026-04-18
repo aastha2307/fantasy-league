@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FirebaseDbPanel } from "@/components/FirebaseDbPanel";
 
 export const metadata: Metadata = {
-  title: "Firebase — Firestore & Data Connect",
+  title: "Firebase — Data Connect",
 };
 
 export default function FirebasePage() {
@@ -18,11 +18,10 @@ export default function FirebasePage() {
             ← Back home
           </Link>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-            Firebase database &amp; queries
+            Firebase Data Connect
           </h1>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Firestore document reads via a Next.js API route (Admin SDK), and Data Connect GraphQL via the generated
-            client SDK.
+            Data Connect GraphQL health check via the generated client SDK.
           </p>
         </header>
 

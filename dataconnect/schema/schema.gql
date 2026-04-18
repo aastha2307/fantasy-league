@@ -1,7 +1,76 @@
-# Minimal table so Data Connect can attach to your Cloud SQL DB without overlapping Prisma models.
-# Table name is prefixed to avoid collisions with app tables.
+# Health-check table managed by Data Connect (does not overlap with app tables)
 type DcHealth
   @table(name: "dc_health", singular: "dcHealth", plural: "dcHealths") {
   id: UUID! @default(expr: "uuidV4()")
   label: String!
+}
+
+# ── Game lobby (home-page join flow) ─────────────────────────────────
+
+type GameRoom
+  @table(name: "GameRoom", singular: "gameRoom", plural: "gameRooms") {
+  id: String!
+  cricApiMatchId: String! @col(name: "cricApiMatchId")
+  label: String!
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+type GamePlayer
+  @table(name: "GamePlayer", singular: "gamePlayer", plural: "gamePlayers") {
+  id: String!
+  roomId: String! @col(name: "roomId")
+  displayName: String! @col(name: "displayName")
+  imagePath: String @col(name: "imagePath")
+  ocrText: String @col(name: "ocrText")
+  ocrPoints: Float @col(name: "ocrPoints")
+  playersJson: String! @col(name: "playersJson")
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+# ── Leagues & Matches ─────────────────────────────────────────────────
+
+type League
+  @table(name: "League", singular: "league", plural: "leagues") {
+  id: String!
+  name: String!
+  joinCode: String! @col(name: "joinCode")
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+type Member
+  @table(name: "Member", singular: "member", plural: "members") {
+  id: String!
+  leagueId: String! @col(name: "leagueId")
+  name: String!
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+type Match
+  @table(name: "Match", singular: "match", plural: "matches") {
+  id: String!
+  leagueId: String! @col(name: "leagueId")
+  label: String!
+  matchDate: Timestamp @col(name: "matchDate")
+  cricApiMatchId: String @col(name: "cricApiMatchId")
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+type TeamSubmission
+  @table(name: "TeamSubmission", singular: "teamSubmission", plural: "teamSubmissions") {
+  id: String!
+  memberId: String! @col(name: "memberId")
+  matchId: String! @col(name: "matchId")
+  imagePath: String @col(name: "imagePath")
+  ocrText: String @col(name: "ocrText")
+  playersJson: String! @col(name: "playersJson")
+  updatedAt: Timestamp! @col(name: "updatedAt")
+  createdAt: Timestamp! @col(name: "createdAt")
+}
+
+type PlayerMatchPoints
+  @table(name: "PlayerMatchPoints", singular: "playerMatchPoints", plural: "playerMatchPointsList") {
+  id: String!
+  matchId: String! @col(name: "matchId")
+  playerName: String! @col(name: "playerName")
+  points: Float!
 }

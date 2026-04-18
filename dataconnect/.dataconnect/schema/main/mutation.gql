@@ -9,6 +9,69 @@ extend type Mutation {
     data: DcHealth_Data!
   ): DcHealth_KeyOutput! @fdc_generated(from: "DcHealth", purpose: INSERT_SINGLE)
   """
+  ✨ Insert a single `GamePlayer` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  gamePlayer_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: GamePlayer_Data!
+  ): GamePlayer_KeyOutput! @fdc_generated(from: "GamePlayer", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `GameRoom` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  gameRoom_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: GameRoom_Data!
+  ): GameRoom_KeyOutput! @fdc_generated(from: "GameRoom", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `League` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  league_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: League_Data!
+  ): League_KeyOutput! @fdc_generated(from: "League", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Match` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  match_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Match_Data!
+  ): Match_KeyOutput! @fdc_generated(from: "Match", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Member` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  member_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Member_Data!
+  ): Member_KeyOutput! @fdc_generated(from: "Member", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `PlayerMatchPoints` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  playerMatchPoints_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: PlayerMatchPoints_Data!
+  ): PlayerMatchPoints_KeyOutput! @fdc_generated(from: "PlayerMatchPoints", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `TeamSubmission` into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  teamSubmission_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: TeamSubmission_Data!
+  ): TeamSubmission_KeyOutput! @fdc_generated(from: "TeamSubmission", purpose: INSERT_SINGLE)
+  """
   ✨ Insert `DcHealth` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
   dcHealth_insertMany(
@@ -17,6 +80,69 @@ extend type Mutation {
     """
     data: [DcHealth_Data!]!
   ): [DcHealth_KeyOutput!]! @fdc_generated(from: "DcHealth", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `GamePlayer` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  gamePlayer_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [GamePlayer_Data!]!
+  ): [GamePlayer_KeyOutput!]! @fdc_generated(from: "GamePlayer", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `GameRoom` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  gameRoom_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [GameRoom_Data!]!
+  ): [GameRoom_KeyOutput!]! @fdc_generated(from: "GameRoom", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `League` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  league_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [League_Data!]!
+  ): [League_KeyOutput!]! @fdc_generated(from: "League", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Match` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  match_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Match_Data!]!
+  ): [Match_KeyOutput!]! @fdc_generated(from: "Match", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Member` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  member_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Member_Data!]!
+  ): [Member_KeyOutput!]! @fdc_generated(from: "Member", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `PlayerMatchPoints` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  playerMatchPoints_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [PlayerMatchPoints_Data!]!
+  ): [PlayerMatchPoints_KeyOutput!]! @fdc_generated(from: "PlayerMatchPoints", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `TeamSubmission` objects into the table. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  teamSubmission_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [TeamSubmission_Data!]!
+  ): [TeamSubmission_KeyOutput!]! @fdc_generated(from: "TeamSubmission", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert or update a single `DcHealth` into the table, based on the primary key. Returns the key of the newly inserted `DcHealth`.
   """
@@ -27,6 +153,69 @@ extend type Mutation {
     data: DcHealth_Data!
   ): DcHealth_KeyOutput! @fdc_generated(from: "DcHealth", purpose: UPSERT_SINGLE)
   """
+  ✨ Insert or update a single `GamePlayer` into the table, based on the primary key. Returns the key of the newly inserted `GamePlayer`.
+  """
+  gamePlayer_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: GamePlayer_Data!
+  ): GamePlayer_KeyOutput! @fdc_generated(from: "GamePlayer", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `GameRoom` into the table, based on the primary key. Returns the key of the newly inserted `GameRoom`.
+  """
+  gameRoom_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: GameRoom_Data!
+  ): GameRoom_KeyOutput! @fdc_generated(from: "GameRoom", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `League` into the table, based on the primary key. Returns the key of the newly inserted `League`.
+  """
+  league_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: League_Data!
+  ): League_KeyOutput! @fdc_generated(from: "League", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Match` into the table, based on the primary key. Returns the key of the newly inserted `Match`.
+  """
+  match_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Match_Data!
+  ): Match_KeyOutput! @fdc_generated(from: "Match", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Member` into the table, based on the primary key. Returns the key of the newly inserted `Member`.
+  """
+  member_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Member_Data!
+  ): Member_KeyOutput! @fdc_generated(from: "Member", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `PlayerMatchPoints` into the table, based on the primary key. Returns the key of the newly inserted `PlayerMatchPoints`.
+  """
+  playerMatchPoints_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: PlayerMatchPoints_Data!
+  ): PlayerMatchPoints_KeyOutput! @fdc_generated(from: "PlayerMatchPoints", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `TeamSubmission` into the table, based on the primary key. Returns the key of the newly inserted `TeamSubmission`.
+  """
+  teamSubmission_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: TeamSubmission_Data!
+  ): TeamSubmission_KeyOutput! @fdc_generated(from: "TeamSubmission", purpose: UPSERT_SINGLE)
+  """
   ✨ Insert or update `DcHealth` objects into the table, based on the primary key. Returns the key of the newly inserted `DcHealth`.
   """
   dcHealth_upsertMany(
@@ -35,6 +224,69 @@ extend type Mutation {
     """
     data: [DcHealth_Data!]!
   ): [DcHealth_KeyOutput!]! @fdc_generated(from: "DcHealth", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `GamePlayer` objects into the table, based on the primary key. Returns the key of the newly inserted `GamePlayer`.
+  """
+  gamePlayer_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [GamePlayer_Data!]!
+  ): [GamePlayer_KeyOutput!]! @fdc_generated(from: "GamePlayer", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `GameRoom` objects into the table, based on the primary key. Returns the key of the newly inserted `GameRoom`.
+  """
+  gameRoom_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [GameRoom_Data!]!
+  ): [GameRoom_KeyOutput!]! @fdc_generated(from: "GameRoom", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `League` objects into the table, based on the primary key. Returns the key of the newly inserted `League`.
+  """
+  league_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [League_Data!]!
+  ): [League_KeyOutput!]! @fdc_generated(from: "League", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Match` objects into the table, based on the primary key. Returns the key of the newly inserted `Match`.
+  """
+  match_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Match_Data!]!
+  ): [Match_KeyOutput!]! @fdc_generated(from: "Match", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Member` objects into the table, based on the primary key. Returns the key of the newly inserted `Member`.
+  """
+  member_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Member_Data!]!
+  ): [Member_KeyOutput!]! @fdc_generated(from: "Member", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `PlayerMatchPoints` objects into the table, based on the primary key. Returns the key of the newly inserted `PlayerMatchPoints`.
+  """
+  playerMatchPoints_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [PlayerMatchPoints_Data!]!
+  ): [PlayerMatchPoints_KeyOutput!]! @fdc_generated(from: "PlayerMatchPoints", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `TeamSubmission` objects into the table, based on the primary key. Returns the key of the newly inserted `TeamSubmission`.
+  """
+  teamSubmission_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [TeamSubmission_Data!]!
+  ): [TeamSubmission_KeyOutput!]! @fdc_generated(from: "TeamSubmission", purpose: UPSERT_MULTIPLE)
   """
   ✨ Update a single `DcHealth` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
   """
@@ -60,6 +312,209 @@ extend type Mutation {
     data: DcHealth_Data!
   ): DcHealth_KeyOutput @fdc_generated(from: "DcHealth", purpose: UPDATE_SINGLE)
   """
+  ✨ Update a single `GamePlayer` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  gamePlayer_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GamePlayer_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GamePlayer_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: GamePlayer_Data!
+  ): GamePlayer_KeyOutput @fdc_generated(from: "GamePlayer", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `GameRoom` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  gameRoom_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GameRoom_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GameRoom_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: GameRoom_Data!
+  ): GameRoom_KeyOutput @fdc_generated(from: "GameRoom", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `League` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  league_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: League_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: League_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: League_Data!
+  ): League_KeyOutput @fdc_generated(from: "League", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Match` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  match_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Match_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Match_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Match_Data!
+  ): Match_KeyOutput @fdc_generated(from: "Match", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Member` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  member_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Member_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Member_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Member_Data!
+  ): Member_KeyOutput @fdc_generated(from: "Member", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `PlayerMatchPoints` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  playerMatchPoints_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PlayerMatchPoints_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PlayerMatchPoints_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: PlayerMatchPoints_Data!
+  ): PlayerMatchPoints_KeyOutput @fdc_generated(from: "PlayerMatchPoints", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `TeamSubmission` based on `id`, `key` or `first`, setting columns specified in `data`. Returns `null` if not found.
+  """
+  teamSubmission_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: TeamSubmission_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TeamSubmission_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: TeamSubmission_Data!
+  ): TeamSubmission_KeyOutput @fdc_generated(from: "TeamSubmission", purpose: UPDATE_SINGLE)
+  """
   ✨ Update `DcHealth` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
   dcHealth_updateMany(
@@ -78,6 +533,139 @@ extend type Mutation {
     """
     data: DcHealth_Data!
   ): Int! @fdc_generated(from: "DcHealth", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `GamePlayer` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  gamePlayer_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: GamePlayer_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: GamePlayer_Data!
+  ): Int! @fdc_generated(from: "GamePlayer", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `GameRoom` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  gameRoom_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: GameRoom_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: GameRoom_Data!
+  ): Int! @fdc_generated(from: "GameRoom", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `League` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  league_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: League_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: League_Data!
+  ): Int! @fdc_generated(from: "League", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Match` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  match_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Match_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Match_Data!
+  ): Int! @fdc_generated(from: "Match", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Member` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  member_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Member_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Member_Data!
+  ): Int! @fdc_generated(from: "Member", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `PlayerMatchPoints` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  playerMatchPoints_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: PlayerMatchPoints_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: PlayerMatchPoints_Data!
+  ): Int! @fdc_generated(from: "PlayerMatchPoints", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `TeamSubmission` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  teamSubmission_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: TeamSubmission_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: TeamSubmission_Data!
+  ): Int! @fdc_generated(from: "TeamSubmission", purpose: UPDATE_MULTIPLE)
   """
   ✨ Delete a single `DcHealth` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
@@ -98,6 +686,174 @@ extend type Mutation {
     first: DcHealth_FirstRow
   ): DcHealth_KeyOutput @fdc_generated(from: "DcHealth", purpose: DELETE_SINGLE)
   """
+  ✨ Delete a single `GamePlayer` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  gamePlayer_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GamePlayer_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GamePlayer_FirstRow
+  ): GamePlayer_KeyOutput @fdc_generated(from: "GamePlayer", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `GameRoom` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  gameRoom_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GameRoom_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GameRoom_FirstRow
+  ): GameRoom_KeyOutput @fdc_generated(from: "GameRoom", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `League` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  league_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: League_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: League_FirstRow
+  ): League_KeyOutput @fdc_generated(from: "League", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Match` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  match_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Match_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Match_FirstRow
+  ): Match_KeyOutput @fdc_generated(from: "Match", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Member` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  member_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Member_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Member_FirstRow
+  ): Member_KeyOutput @fdc_generated(from: "Member", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `PlayerMatchPoints` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  playerMatchPoints_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PlayerMatchPoints_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PlayerMatchPoints_FirstRow
+  ): PlayerMatchPoints_KeyOutput @fdc_generated(from: "PlayerMatchPoints", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `TeamSubmission` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  teamSubmission_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: TeamSubmission_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TeamSubmission_FirstRow
+  ): TeamSubmission_KeyOutput @fdc_generated(from: "TeamSubmission", purpose: DELETE_SINGLE)
+  """
   ✨ Delete `DcHealth` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
   dcHealth_deleteMany(
@@ -111,4 +867,102 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "DcHealth", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `GamePlayer` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  gamePlayer_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: GamePlayer_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "GamePlayer", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `GameRoom` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  gameRoom_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: GameRoom_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "GameRoom", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `League` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  league_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: League_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "League", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Match` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  match_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Match_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Match", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Member` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  member_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Member_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Member", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `PlayerMatchPoints` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  playerMatchPoints_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: PlayerMatchPoints_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "PlayerMatchPoints", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `TeamSubmission` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  teamSubmission_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: TeamSubmission_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "TeamSubmission", purpose: DELETE_MULTIPLE)
 }

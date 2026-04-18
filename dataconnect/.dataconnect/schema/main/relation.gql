@@ -4,3 +4,45 @@ extend type DcHealth {
   """
   _metadata: _Metadata @fdc_generated(from: "DcHealth", purpose: METADATA_FIELD)
 }
+extend type GamePlayer {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "GamePlayer", purpose: METADATA_FIELD)
+}
+extend type GameRoom {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "GameRoom", purpose: METADATA_FIELD)
+}
+extend type League {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "League", purpose: METADATA_FIELD)
+}
+extend type Match {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Match", purpose: METADATA_FIELD)
+}
+extend type Member {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Member", purpose: METADATA_FIELD)
+}
+extend type PlayerMatchPoints {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "PlayerMatchPoints", purpose: METADATA_FIELD)
+}
+extend type TeamSubmission {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "TeamSubmission", purpose: METADATA_FIELD)
+}

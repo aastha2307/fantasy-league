@@ -19,6 +19,174 @@ extend type Query {
     first: DcHealth_FirstRow
   ): DcHealth @fdc_generated(from: "DcHealth", purpose: QUERY_SINGLE)
   """
+  ✨ Look up a single `GamePlayer` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  gamePlayer(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GamePlayer_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GamePlayer_FirstRow
+  ): GamePlayer @fdc_generated(from: "GamePlayer", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `GameRoom` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  gameRoom(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: GameRoom_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: GameRoom_FirstRow
+  ): GameRoom @fdc_generated(from: "GameRoom", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `League` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  league(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: League_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: League_FirstRow
+  ): League @fdc_generated(from: "League", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Match` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  match(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Match_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Match_FirstRow
+  ): Match @fdc_generated(from: "Match", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Member` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  member(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Member_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Member_FirstRow
+  ): Member @fdc_generated(from: "Member", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `PlayerMatchPoints` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  playerMatchPoints(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PlayerMatchPoints_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PlayerMatchPoints_FirstRow
+  ): PlayerMatchPoints @fdc_generated(from: "PlayerMatchPoints", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `TeamSubmission` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  teamSubmission(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: TeamSubmission_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TeamSubmission_FirstRow
+  ): TeamSubmission @fdc_generated(from: "TeamSubmission", purpose: QUERY_SINGLE)
+  """
   ✨ List `DcHealth` objects in the table, optionally filtered by `where` conditions.
   """
   dcHealths(
@@ -42,4 +210,172 @@ extend type Query {
     """
     limit: Int = 100
   ): [DcHealth!]! @fdc_generated(from: "DcHealth", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `GamePlayer` objects in the table, optionally filtered by `where` conditions.
+  """
+  gamePlayers(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: GamePlayer_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [GamePlayer_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [GamePlayer!]! @fdc_generated(from: "GamePlayer", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `GameRoom` objects in the table, optionally filtered by `where` conditions.
+  """
+  gameRooms(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: GameRoom_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [GameRoom_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [GameRoom!]! @fdc_generated(from: "GameRoom", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `League` objects in the table, optionally filtered by `where` conditions.
+  """
+  leagues(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: League_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [League_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [League!]! @fdc_generated(from: "League", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Match` objects in the table, optionally filtered by `where` conditions.
+  """
+  matches(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Match_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Match_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [Match!]! @fdc_generated(from: "Match", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Member` objects in the table, optionally filtered by `where` conditions.
+  """
+  members(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Member_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Member_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [Member!]! @fdc_generated(from: "Member", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `PlayerMatchPoints` objects in the table, optionally filtered by `where` conditions.
+  """
+  playerMatchPointsList(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PlayerMatchPoints_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PlayerMatchPoints_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [PlayerMatchPoints!]! @fdc_generated(from: "PlayerMatchPoints", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `TeamSubmission` objects in the table, optionally filtered by `where` conditions.
+  """
+  teamSubmissions(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: TeamSubmission_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [TeamSubmission_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+  ): [TeamSubmission!]! @fdc_generated(from: "TeamSubmission", purpose: QUERY_MULTIPLE)
 }
