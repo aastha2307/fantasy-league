@@ -25,8 +25,6 @@ runConfig:
   memoryMiB: 1024
   cpu: 1
   concurrency: 20
-  cloudSqlInstances:
-    - ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
 
 # Do not set scripts.buildCommand / scripts.runCommand here unless you must.
 # Overriding buildCommand opts you out of Firebase's Next.js adapter, which can break
@@ -38,8 +36,19 @@ env:
   - variable: NODE_OPTIONS
     value: --max-old-space-size=4096
     availability: [BUILD]
-  - variable: DATABASE_URL
-    secret: DATABASE_URL
+  # Cloud SQL connector — replaces socket-based DATABASE_URL on Cloud Run.
+  # CLOUD_SQL_INSTANCE triggers the connector path in src/lib/db.ts.
+  - variable: CLOUD_SQL_INSTANCE
+    value: ipl-fantasy-league-71959:asia-south1:ipl-fantasy-league-71959-instance
+    availability: [RUNTIME]
+  - variable: DB_NAME
+    value: ipl-fantasy-league-71959-database
+    availability: [RUNTIME]
+  - variable: DB_USER
+    value: postgres
+    availability: [RUNTIME]
+  - variable: DB_PASSWORD
+    secret: DB_PASSWORD
     availability: [RUNTIME]
   # Server / Data Connect (same project as dataconnect/dataconnect.yaml)
   - variable: DATA_CONNECT_SERVICE_ID
