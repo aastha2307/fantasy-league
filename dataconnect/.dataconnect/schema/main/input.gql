@@ -157,18 +157,6 @@ input GamePlayer_Data {
   """
   id_expr: String_Expr
   """
-  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
   ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
   """
   displayName: String
@@ -237,10 +225,6 @@ input GamePlayer_Filter {
   ✨ Generated from Field `GamePlayer`.`id` of type `String!`
   """
   id: String_Filter
-  """
-  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
   """
   ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
   """
@@ -314,10 +298,6 @@ input GamePlayer_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `GamePlayer`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
   ✨ Generated from Field `GamePlayer`.`displayName` of type `String!`
   """
   displayName: OrderDirection
@@ -355,18 +335,6 @@ input GameRoom_Data {
   """
   id_expr: String_Expr
   """
-  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
   ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
   """
   cricApiMatchId: String
@@ -403,10 +371,6 @@ input GameRoom_Filter {
   ✨ Generated from Field `GameRoom`.`id` of type `String!`
   """
   id: String_Filter
-  """
-  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
   """
   ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
   """
@@ -464,10 +428,6 @@ input GameRoom_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `GameRoom`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
   ✨ Generated from Field `GameRoom`.`cricApiMatchId` of type `String!`
   """
   cricApiMatchId: OrderDirection
@@ -488,18 +448,6 @@ input League_Data {
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `League`.`id` of type `String!`)
   """
   id_expr: String_Expr
-  """
-  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `League`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `League`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
   """
   ✨ Generated from Field `League`.`joinCode` of type `String!`
   """
@@ -537,10 +485,6 @@ input League_Filter {
   ✨ Generated from Field `League`.`id` of type `String!`
   """
   id: String_Filter
-  """
-  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
   """
   ✨ Generated from Field `League`.`joinCode` of type `String!`
   """
@@ -598,10 +542,6 @@ input League_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `League`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
   ✨ Generated from Field `League`.`joinCode` of type `String!`
   """
   joinCode: OrderDirection
@@ -622,18 +562,6 @@ input Match_Data {
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Match`.`id` of type `String!`)
   """
   id_expr: String_Expr
-  """
-  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
   """
   ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
   """
@@ -658,18 +586,6 @@ input Match_Data {
   ✨ `_expr` server value variant of `leagueId` (✨ Generated from Field `Match`.`leagueId` of type `String!`)
   """
   leagueId_expr: String_Expr
-  """
-  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
-  """
-  matchDate: Timestamp
-  """
-  ✨ `_expr` server value variant of `matchDate` (✨ Generated from Field `Match`.`matchDate` of type `Timestamp`)
-  """
-  matchDate_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `matchDate` (✨ Generated from Field `Match`.`matchDate` of type `Timestamp`)
-  """
-  matchDate_time: Timestamp_Relative
 }
 """
 ✨ Generated filter input type for table 'Match'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -692,10 +608,6 @@ input Match_Filter {
   """
   id: String_Filter
   """
-  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
-  """
   ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
   """
   cricApiMatchId: String_Filter
@@ -707,10 +619,6 @@ input Match_Filter {
   ✨ Generated from Field `Match`.`leagueId` of type `String!`
   """
   leagueId: String_Filter
-  """
-  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
-  """
-  matchDate: Timestamp_Filter
 }
 """
 ✨ Generated first-row input type for table 'Match'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -760,10 +668,6 @@ input Match_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `Match`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
   ✨ Generated from Field `Match`.`cricApiMatchId` of type `String`
   """
   cricApiMatchId: OrderDirection
@@ -775,10 +679,6 @@ input Match_Order {
   ✨ Generated from Field `Match`.`leagueId` of type `String!`
   """
   leagueId: OrderDirection
-  """
-  ✨ Generated from Field `Match`.`matchDate` of type `Timestamp`
-  """
-  matchDate: OrderDirection
 }
 """
 ✨ Generated data input type for table 'Member'. It includes all necessary fields for creating or upserting rows into table.
@@ -792,18 +692,6 @@ input Member_Data {
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Member`.`id` of type `String!`)
   """
   id_expr: String_Expr
-  """
-  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
   """
   ✨ Generated from Field `Member`.`leagueId` of type `String!`
   """
@@ -841,10 +729,6 @@ input Member_Filter {
   ✨ Generated from Field `Member`.`id` of type `String!`
   """
   id: String_Filter
-  """
-  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
   """
   ✨ Generated from Field `Member`.`leagueId` of type `String!`
   """
@@ -901,10 +785,6 @@ input Member_Order {
   ✨ Generated from Field `Member`.`id` of type `String!`
   """
   id: OrderDirection
-  """
-  ✨ Generated from Field `Member`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
   """
   ✨ Generated from Field `Member`.`leagueId` of type `String!`
   """
@@ -1057,18 +937,6 @@ input TeamSubmission_Data {
   """
   id_expr: String_Expr
   """
-  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
   ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
   """
   imagePath: String
@@ -1108,18 +976,6 @@ input TeamSubmission_Data {
   ✨ `_expr` server value variant of `playersJson` (✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`)
   """
   playersJson_expr: String_Expr
-  """
-  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
-  """
-  updatedAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`)
-  """
-  updatedAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`)
-  """
-  updatedAt_time: Timestamp_Relative
 }
 """
 ✨ Generated filter input type for table 'TeamSubmission'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1142,10 +998,6 @@ input TeamSubmission_Filter {
   """
   id: String_Filter
   """
-  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
-  """
   ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
   """
   imagePath: String_Filter
@@ -1165,10 +1017,6 @@ input TeamSubmission_Filter {
   ✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`
   """
   playersJson: String_Filter
-  """
-  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
-  """
-  updatedAt: Timestamp_Filter
 }
 """
 ✨ Generated first-row input type for table 'TeamSubmission'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1218,10 +1066,6 @@ input TeamSubmission_Order {
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `TeamSubmission`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
   ✨ Generated from Field `TeamSubmission`.`imagePath` of type `String`
   """
   imagePath: OrderDirection
@@ -1241,8 +1085,4 @@ input TeamSubmission_Order {
   ✨ Generated from Field `TeamSubmission`.`playersJson` of type `String!`
   """
   playersJson: OrderDirection
-  """
-  ✨ Generated from Field `TeamSubmission`.`updatedAt` of type `Timestamp!`
-  """
-  updatedAt: OrderDirection
 }

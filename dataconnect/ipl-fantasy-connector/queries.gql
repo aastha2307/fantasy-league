@@ -6,46 +6,33 @@ query DcListHealth($limit: Int) @auth(level: PUBLIC) {
 }
 
 query ListGameRooms($limit: Int) @auth(level: PUBLIC) {
-  gameRooms(limit: $limit, orderBy: [{ createdAt: DESC }]) {
+  gameRooms(limit: $limit) {
     id
     cricApiMatchId
     label
-    createdAt
   }
 }
 
 query ListGamePlayers($roomId: String!, $limit: Int) @auth(level: PUBLIC) {
-  gamePlayers(
-    where: { roomId: { eq: $roomId } }
-    limit: $limit
-    orderBy: [{ createdAt: ASC }]
-  ) {
+  gamePlayers(where: { roomId: { eq: $roomId } }, limit: $limit) {
     id
     displayName
     ocrPoints
-    createdAt
   }
 }
 
 query ListLeagues($limit: Int) @auth(level: PUBLIC) {
-  leagues(limit: $limit, orderBy: [{ createdAt: DESC }]) {
+  leagues(limit: $limit) {
     id
     name
     joinCode
-    createdAt
   }
 }
 
 query ListMatches($leagueId: String!, $limit: Int) @auth(level: PUBLIC) {
-  matches(
-    where: { leagueId: { eq: $leagueId } }
-    limit: $limit
-    orderBy: [{ createdAt: DESC }]
-  ) {
+  matches(where: { leagueId: { eq: $leagueId } }, limit: $limit) {
     id
     label
-    matchDate
     cricApiMatchId
-    createdAt
   }
 }

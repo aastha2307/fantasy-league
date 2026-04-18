@@ -6,13 +6,14 @@ type DcHealth
 }
 
 # ── Game lobby (home-page join flow) ─────────────────────────────────
+# Timestamps omitted: Prisma creates timestamp(3) without time zone;
+# Data Connect Timestamp maps to timestamptz — incompatible in COMPATIBLE mode.
 
 type GameRoom
   @table(name: "GameRoom", singular: "gameRoom", plural: "gameRooms") {
   id: String!
   cricApiMatchId: String! @col(name: "cricApiMatchId")
   label: String!
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 type GamePlayer
@@ -24,7 +25,6 @@ type GamePlayer
   ocrText: String @col(name: "ocrText")
   ocrPoints: Float @col(name: "ocrPoints")
   playersJson: String! @col(name: "playersJson")
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 # ── Leagues & Matches ─────────────────────────────────────────────────
@@ -34,7 +34,6 @@ type League
   id: String!
   name: String!
   joinCode: String! @col(name: "joinCode")
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 type Member
@@ -42,7 +41,6 @@ type Member
   id: String!
   leagueId: String! @col(name: "leagueId")
   name: String!
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 type Match
@@ -50,9 +48,7 @@ type Match
   id: String!
   leagueId: String! @col(name: "leagueId")
   label: String!
-  matchDate: Timestamp @col(name: "matchDate")
   cricApiMatchId: String @col(name: "cricApiMatchId")
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 type TeamSubmission
@@ -63,8 +59,6 @@ type TeamSubmission
   imagePath: String @col(name: "imagePath")
   ocrText: String @col(name: "ocrText")
   playersJson: String! @col(name: "playersJson")
-  updatedAt: Timestamp! @col(name: "updatedAt")
-  createdAt: Timestamp! @col(name: "createdAt")
 }
 
 type PlayerMatchPoints
