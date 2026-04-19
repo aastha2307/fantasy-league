@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Uploaded screenshots are made public by the server via makePublic().
+    // Allow anyone to read files under uploads/.
+    match /uploads/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // writes go through the server-side Admin SDK only
+    }
+
+    // Everything else is private.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

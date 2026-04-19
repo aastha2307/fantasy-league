@@ -12,7 +12,7 @@ const fromEnv =
 const allowedDevOrigins = [...new Set([...fromEnv, "192.168.1.4"])];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["tesseract.js", "pg"],
+  serverExternalPackages: ["tesseract.js", "pg", "firebase-admin"],
   // Include Tesseract WASM + worker files in the standalone output.
   // Firebase App Hosting builds as standalone; without this, the .wasm
   // file is missing at runtime and OCR crashes with ENOENT.

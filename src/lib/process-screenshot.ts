@@ -1,28 +1,41 @@
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
 import { nanoid } from "nanoid";
 import * as Tesseract from "tesseract.js";
 import { extractDream11PointsBestEffort } from "@/lib/parse-dream11-points-ocr";
 import { extractTeamPlayersFromOcr } from "@/lib/parse-dream11-ocr";
+import { ensureFirebaseAdminApp } from "@/lib/firebase-admin-app";
+import { getStorage } from "firebase-admin/storage";
 
-const emptyTeam = JSON.stringify({
+export const emptyTeam = JSON.stringify({
   players: [] as string[],
   captain: "",
   viceCaptain: "",
 });
 
 /**
- * Saves image under public/, runs OCR, returns relative public URL, parsed XI, and team points (if found).
+ * Uploads an image buffer to Firebase Cloud Storage and returns a permanent public URL.
+ * The Admin SDK's makePublic() grants allUsers storage.objects.viewer, so no Storage
+ * security rules change is required for reads.
+ */
+async function uploadToCloudStorage(buf: Buffer, storagePath: string): Promise<string> {
+  ensureFirebaseAdminApp();
+  const bucket = getStorage().bucket();
+  const file = bucket.file(storagePath);
+  await file.save(buf, { metadata: { contentType: "image/png" } });
+  await file.makePublic();
+  // Standard GCS public URL (stable, no expiry).
+  return `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+}
+
+/**
+ * Uploads image to Cloud Storage, runs OCR, returns public GCS URL, parsed XI, and team points.
  */
 export async function processDream11Screenshot(
   buf: Buffer,
-  publicDirUnderUploads: string
+  subFolder: string
 ): Promise<{ ocrText: string; playersJson: string; imagePublicPath: string; ocrPoints: number | null }> {
-  const ext = "png";
-  const rel = `uploads/${publicDirUnderUploads}/${nanoid()}.${ext}`;
-  const abs = path.join(process.cwd(), "public", rel);
-  await mkdir(path.dirname(abs), { recursive: true });
-  await writeFile(abs, buf);
+  const storagePath = `uploads/${subFolder}/${nanoid()}.png`;
+
+  const imagePublicPath = await uploadToCloudStorage(buf, storagePath);
 
   let text = "";
   try {
@@ -44,7 +57,7 @@ export async function processDream11Screenshot(
     ]);
     text = [defaultOcr, sparseOcr].join("\n");
   } catch (e) {
-    console.error("Tesseract OCR failed (screenshot still saved):", e);
+    console.error("Tesseract OCR failed (screenshot still saved to GCS):", e);
     text = "";
   }
 
@@ -56,9 +69,7 @@ export async function processDream11Screenshot(
   return {
     ocrText: text,
     playersJson,
-    imagePublicPath: `/${rel}`,
+    imagePublicPath,
     ocrPoints,
   };
 }
-
-export { emptyTeam };
