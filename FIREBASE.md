@@ -143,10 +143,23 @@ Console variables **override** [`apphosting.yaml`](./apphosting.yaml).
 
 ## Uploads / screenshots
 
-Dream11 screenshots are saved under `public/uploads` on the **local disk**. On App Hosting, that disk is **not** persistent across instances or restarts. For production you should either:
+Dream11 screenshots are stored in **Firebase Storage** (GCS) when `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` is set. A permanent download-token URL is returned and saved to the database, so images survive Cloud Run instance restarts and scale-outs without any 404s.
 
-- Accept ephemeral images (not ideal), or  
-- Later, move uploads to **Firebase Storage** or another object store and store URLs in the database.
+When the env var is not set (local dev without a bucket configured) the file falls back to `public/uploads` on disk, served by the Next.js dev server.
+
+### First-time setup (one-off)
+
+The upload uses the Firebase Admin SDK with Application Default Credentials (ADC), which is automatic on Cloud Run. No extra secrets are needed — the Cloud Run service account must have the **Firebase Storage Admin** (or **Storage Object Admin**) role on the project:
+
+```bash
+# Find the Cloud Run service account (printed in the Cloud Run service details)
+# then grant it access:
+gcloud projects add-iam-policy-binding ipl-fantasy-league-71959 \
+  --member="serviceAccount:<SERVICE_ACCOUNT_EMAIL>" \
+  --role="roles/storage.objectAdmin"
+```
+
+The `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` variable is already set in `apphosting.yaml` (`ipl-fantasy-league-71959.firebasestorage.app`), so no additional env var configuration is required.
 
 ## Troubleshooting
 

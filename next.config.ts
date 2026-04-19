@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/game/join": ["./node_modules/tesseract.js-core/**"],
     "/api/game/[roomId]/screenshot": ["./node_modules/tesseract.js-core/**"],
+    "/api/upload": ["./node_modules/tesseract.js-core/**"],
   },
   ...(process.env.NODE_ENV !== "production"
     ? {

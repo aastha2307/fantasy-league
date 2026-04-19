@@ -1,3 +1,5 @@
+import { mkdir, writeFile } from "fs/promises";
+import path from "path";
 import { nanoid } from "nanoid";
 import * as Tesseract from "tesseract.js";
 import { extractDream11PointsBestEffort } from "@/lib/parse-dream11-points-ocr";
@@ -12,22 +14,46 @@ export const emptyTeam = JSON.stringify({
 });
 
 /**
- * Uploads an image buffer to Firebase Cloud Storage and returns a permanent public URL.
- * The Admin SDK's makePublic() grants allUsers storage.objects.viewer, so no Storage
- * security rules change is required for reads.
+ * Saves the image buffer and returns a stable public URL.
+ *
+ * On Cloud Run (Firebase App Hosting) the local disk is ephemeral — files
+ * disappear on restart or when a different instance serves the request.
+ * When NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET is set, the image is uploaded to
+ * Firebase Storage and a permanent download-token URL is returned (the token
+ * is stored in the file's custom metadata, which bypasses Storage security
+ * rules for reads without requiring any ACL or IAM changes).
+ *
+ * Without the env var (local dev, no bucket configured) it falls back to
+ * writing under public/uploads so the dev server can serve the file at /uploads/…
  */
-async function uploadToCloudStorage(buf: Buffer, storagePath: string): Promise<string> {
-  ensureFirebaseAdminApp();
-  const bucket = getStorage().bucket();
-  const file = bucket.file(storagePath);
-  await file.save(buf, { metadata: { contentType: "image/png" } });
-  await file.makePublic();
-  // Standard GCS public URL (stable, no expiry).
-  return `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+async function saveImageAndGetUrl(buf: Buffer, storagePath: string): Promise<string> {
+  const bucketName = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+
+  if (bucketName) {
+    ensureFirebaseAdminApp();
+    const downloadToken = nanoid();
+    const fileRef = getStorage().bucket(bucketName).file(storagePath);
+    await fileRef.save(buf, {
+      contentType: "image/png",
+      metadata: {
+        // Firebase serves this URL permanently; the token acts as a bearer
+        // credential and is validated server-side against this metadata field.
+        metadata: { firebaseStorageDownloadTokens: downloadToken },
+      },
+    });
+    const encodedPath = encodeURIComponent(storagePath);
+    return `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodedPath}?alt=media&token=${downloadToken}`;
+  }
+
+  // Local dev fallback — serve via Next.js public/
+  const abs = path.join(process.cwd(), "public", storagePath);
+  await mkdir(path.dirname(abs), { recursive: true });
+  await writeFile(abs, buf);
+  return `/${storagePath}`;
 }
 
 /**
- * Uploads image to Cloud Storage, runs OCR, returns public GCS URL, parsed XI, and team points.
+ * Saves image, runs OCR, returns stable public URL, parsed XI, and team points (if found).
  */
 export async function processDream11Screenshot(
   buf: Buffer,
@@ -35,7 +61,7 @@ export async function processDream11Screenshot(
 ): Promise<{ ocrText: string; playersJson: string; imagePublicPath: string; ocrPoints: number | null }> {
   const storagePath = `uploads/${subFolder}/${nanoid()}.png`;
 
-  const imagePublicPath = await uploadToCloudStorage(buf, storagePath);
+  const imagePublicPath = await saveImageAndGetUrl(buf, storagePath);
 
   let text = "";
   try {
@@ -57,7 +83,7 @@ export async function processDream11Screenshot(
     ]);
     text = [defaultOcr, sparseOcr].join("\n");
   } catch (e) {
-    console.error("Tesseract OCR failed (screenshot still saved to GCS):", e);
+    console.error("Tesseract OCR failed (screenshot already saved):", e);
     text = "";
   }
 
