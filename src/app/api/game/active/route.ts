@@ -13,7 +13,7 @@ export type ActiveRoom = {
   playerCount: number;
 };
 
-/** Returns joinable game rooms with at least one participant, ordered newest first. */
+/** Joinable game rooms for ongoing matches (≥1 player), newest first — capped at 3 for the home page. */
 export async function GET() {
   try {
     const localMatches = prioritizeSeriesMatches(
@@ -43,7 +43,9 @@ export async function GET() {
       return activeMatchIds.has(room.cricApiMatchId);
     });
 
-    const result: ActiveRoom[] = filteredRooms.map((r) => ({
+    const latestThree = filteredRooms.slice(0, 3);
+
+    const result: ActiveRoom[] = latestThree.map((r) => ({
       roomId: r.id,
       label: r.label,
       cricApiMatchId: r.cricApiMatchId,

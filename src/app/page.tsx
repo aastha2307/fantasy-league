@@ -158,7 +158,10 @@ export default function Home() {
         {/* ── Active games ── */}
         {(activeRoomsLoading || activeRooms.length > 0) && (
           <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6 space-y-3">
-            <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Active games</h2>
+            <div>
+              <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Active games</h2>
+              <p className="mt-1 text-xs text-zinc-500">Up to the 3 most recent ongoing matches.</p>
+            </div>
             {activeRoomsLoading ? (
               <p className="text-sm text-zinc-500">Loading…</p>
             ) : (

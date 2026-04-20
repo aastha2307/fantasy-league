@@ -259,57 +259,65 @@ export default function GameLeaderboardPage() {
                   <button
                     type="button"
                     onClick={() => toggle(row.playerId)}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/80"
+                    className="w-full px-4 py-3 text-left transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/80"
                     aria-expanded={isOpen}
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                      {index + 1}
-                    </span>
-                    {row.imagePath ? (
-                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-                        <Image src={row.imagePath} alt="" fill className="object-cover" unoptimized />
+                    <div className="grid w-full grid-cols-[auto_auto_minmax(0,1fr)] items-start gap-x-3 gap-y-2">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                        {index + 1}
+                      </span>
+                      {row.imagePath ? (
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+                          <Image src={row.imagePath} alt="" fill className="object-cover" unoptimized />
+                        </div>
+                      ) : (
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs text-zinc-400 dark:bg-zinc-800">
+                          No img
+                        </div>
+                      )}
+                      <div className="flex min-w-0 items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                            {row.displayName}
+                            {isMe ? (
+                              <span className="ml-2 text-xs font-normal text-emerald-700 dark:text-emerald-400">
+                                (you)
+                              </span>
+                            ) : null}
+                          </span>
+                          {row.ocrPoints == null && (
+                            <span className="mt-0.5 block text-xs text-amber-700 dark:text-amber-400">
+                              No points from screenshot — use home join with image or edit your total
+                            </span>
+                          )}
+                        </div>
+                        <svg
+                          className={`mt-0.5 h-5 w-5 shrink-0 text-zinc-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          aria-hidden
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
                       </div>
-                    ) : (
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-xs text-zinc-400 dark:bg-zinc-800">
-                        No img
-                      </div>
-                    )}
-                    <span className="min-w-0 flex-1">
-                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {row.displayName}
-                        {isMe ? (
-                          <span className="ml-2 text-xs font-normal text-emerald-700 dark:text-emerald-400">
-                            (you)
+
+                      <div
+                        className={`col-start-3 flex w-full min-w-0 items-center gap-3 border-t border-zinc-100 pt-2 dark:border-zinc-800 ${
+                          prize !== null ? "justify-between" : "justify-end"
+                        }`}
+                      >
+                        {prize !== null ? (
+                          <span className="inline-flex shrink-0 rounded-lg bg-amber-50 px-2.5 py-1 font-mono text-sm font-semibold text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
+                            Rs {prize}
                           </span>
                         ) : null}
-                      </span>
-                      {row.ocrPoints == null && (
-                        <span className="mt-0.5 block text-xs text-amber-700 dark:text-amber-400">
-                          No points from screenshot — use home join with image or edit your total
+                        <span className="font-mono text-lg tabular-nums text-emerald-700 dark:text-emerald-400">
+                          {row.total.toFixed(2)}
                         </span>
-                      )}
-                    </span>
-                    <span className="w-20 shrink-0 text-right">
-                      {prize !== null ? (
-                        <span className="inline-block rounded-lg bg-amber-50 px-2.5 py-1 font-mono text-sm font-semibold text-amber-900 dark:bg-amber-950/40 dark:text-amber-100">
-                          Rs {prize}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-zinc-400 dark:text-zinc-500">-</span>
-                      )}
-                    </span>
-                    <span className="font-mono text-lg tabular-nums text-emerald-700 dark:text-emerald-400">
-                      {row.total.toFixed(2)}
-                    </span>
-                    <svg
-                      className={`h-5 w-5 shrink-0 text-zinc-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
+                      </div>
+                    </div>
                   </button>
 
                   {isOpen && row.imagePath && (
