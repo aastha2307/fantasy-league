@@ -41,13 +41,13 @@ function sortKeyMs(m: MatchWithSchedule): number {
   return Number.isNaN(t) ? 0 : t;
 }
 
-/** Live first, then chronological. */
+/** Live first, then newest-by-schedule first (latest fixture at top). */
 export function sortMatchesForDisplay<T extends MatchWithSchedule & { matchStarted?: boolean; matchEnded?: boolean }>(
   matches: T[]
 ): T[] {
   const live = matches.filter((m) => m.matchStarted && !m.matchEnded);
   const rest = matches
     .filter((m) => !(m.matchStarted && !m.matchEnded))
-    .sort((a, b) => sortKeyMs(a) - sortKeyMs(b));
+    .sort((a, b) => sortKeyMs(b) - sortKeyMs(a));
   return [...live, ...rest];
 }

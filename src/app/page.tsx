@@ -8,7 +8,6 @@ import { filterMatchesToTodayAndYesterdayIst, sortMatchesForDisplay } from "@/li
 import { setGamePlayerId } from "@/lib/storage";
 import { TRACKED_PLAYERS } from "@/lib/tracked-players";
 import type { ActiveRoom } from "@/app/api/game/active/route";
-import type { OverallLeaderboardResponse } from "@/app/api/game/overall/route";
 import apiResponse from "@/app/api/cricket/current-matches/apiresponse.json";
 
 type CricMatch = {
@@ -32,8 +31,6 @@ export default function Home() {
   const [matches] = useState<CricMatch[]>(TODAYS_MATCHES);
   const [selectedId, setSelectedId] = useState(TODAYS_MATCHES[0]?.id ?? "");
   const [selectedLabel, setSelectedLabel] = useState(TODAYS_MATCHES[0]?.name ?? "");
-  const [manualId, setManualId] = useState("");
-  const [manualLabel, setManualLabel] = useState("");
   const [displayName, setDisplayName] = useState(TRACKED_PLAYERS[0]?.displayName ?? "");
   const [file, setFile] = useState<File | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -45,8 +42,6 @@ export default function Home() {
   } | null>(null);
   const [activeRooms, setActiveRooms] = useState<ActiveRoom[]>([]);
   const [activeRoomsLoading, setActiveRoomsLoading] = useState(true);
-  const [overall, setOverall] = useState<OverallLeaderboardResponse | null>(null);
-  const [overallLoading, setOverallLoading] = useState(true);
 
   useEffect(() => {
     void (async () => {
@@ -64,22 +59,6 @@ export default function Home() {
     })();
   }, []);
 
-  useEffect(() => {
-    void (async () => {
-      try {
-        const res = await fetch("/api/game/overall", { cache: "no-store" });
-        if (res.ok) {
-          const data = (await res.json()) as OverallLeaderboardResponse;
-          setOverall(data);
-        }
-      } catch {
-        // silently ignore - this section is best effort only
-      } finally {
-        setOverallLoading(false);
-      }
-    })();
-  }, []);
-
 
   function onPickMatch(id: string) {
     setSelectedId(id);
@@ -92,10 +71,10 @@ export default function Home() {
     e.preventDefault();
     setErr(null);
     setAlreadyJoined(null);
-    const cricId = manualId.trim() || selectedId;
-    const label = manualLabel.trim() || selectedLabel.trim();
+    const cricId = selectedId.trim();
+    const label = selectedLabel.trim();
     if (!cricId || !label) {
-      setErr("Select a match from the list, or enter a Cricket Data match id and title.");
+      setErr("Select a match from the list.");
       return;
     }
     if (!displayName.trim()) {
@@ -166,137 +145,63 @@ export default function Home() {
             Pick today&apos;s match, attach your Dream11 team screenshot, and join the leaderboard. We read your{" "}
             <strong className="text-zinc-800 dark:text-zinc-200">team points</strong> from the image (OCR).
           </p>
+          <p className="text-sm">
+            <Link
+              href="/overall-leaderboard"
+              className="font-medium text-emerald-700 underline dark:text-emerald-400"
+            >
+              Overall Leaderboard
+            </Link>
+          </p>
         </header>
 
         {/* ── Active games ── */}
         {(activeRoomsLoading || activeRooms.length > 0) && (
-          <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 space-y-3">
+          <section className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6 space-y-3">
             <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Active games</h2>
             {activeRoomsLoading ? (
               <p className="text-sm text-zinc-500">Loading…</p>
             ) : (
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {activeRooms.map((room) => (
                   <li
                     key={room.roomId}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 px-4 py-3 dark:border-zinc-700"
+                    className="flex flex-col gap-3 rounded-xl border border-zinc-200 px-3 py-3 dark:border-zinc-700 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-4"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate font-medium text-zinc-900 dark:text-zinc-100">{room.label}</p>
-                      <p className="text-xs text-zinc-500">
+                    <div className="min-w-0 sm:min-w-[8rem] sm:flex-1">
+                      <p className="break-words font-medium leading-snug text-zinc-900 dark:text-zinc-100">
+                        {room.label}
+                      </p>
+                      <p className="mt-0.5 text-xs text-zinc-500">
                         {room.playerCount} {room.playerCount === 1 ? "player" : "players"} joined
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setManualId(room.cricApiMatchId);
-                        setManualLabel(room.label);
-                        setSelectedId("");
-                        setSelectedLabel("");
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                      }}
-                      className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-                    >
-                      Join &amp; upload
-                    </button>
-                    <Link
-                      href={`/game/${room.roomId}`}
-                      className="shrink-0 rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
-                    >
-                      Leaderboard
-                    </Link>
+                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:shrink-0 sm:flex-row sm:gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAlreadyJoined(null);
+                          setSelectedId(room.cricApiMatchId);
+                          setSelectedLabel(room.label);
+                          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                        }}
+                        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 sm:min-h-0 sm:w-auto sm:py-2"
+                      >
+                        Join &amp; upload
+                      </button>
+                      <Link
+                        href={`/game/${room.roomId}`}
+                        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:min-h-0 sm:w-auto sm:py-2"
+                      >
+                        Leaderboard
+                      </Link>
+                    </div>
                   </li>
                 ))}
               </ul>
             )}
           </section>
         )}
-
-        <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 space-y-4">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Overall leaderboard (6 players)</h2>
-          <p className="text-xs text-zinc-500">
-            Players are prepopulated in join form: aastha2307, Aakhri rastaa, Tantra Yantra Mantra, aaojeete,
-            Anvesh Bandits 007, Bhenkar Bhopali.
-          </p>
-          {overallLoading || !overall ? (
-            <p className="text-sm text-zinc-500">Loading overall standings…</p>
-          ) : (
-            <>
-              {(() => {
-                const participants = overall.participants ?? [];
-                const gameResults = overall.gameResults ?? [];
-                return (
-                  <>
-              <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700">
-                <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-700">
-                  <thead className="bg-zinc-50 dark:bg-zinc-800/70">
-                    <tr>
-                      <th className="px-3 py-2 text-left font-semibold text-zinc-700 dark:text-zinc-200">Player</th>
-                      <th className="px-3 py-2 text-right font-semibold text-zinc-700 dark:text-zinc-200">Wins</th>
-                      <th className="px-3 py-2 text-right font-semibold text-zinc-700 dark:text-zinc-200">Reward</th>
-                      <th className="px-3 py-2 text-right font-semibold text-zinc-700 dark:text-zinc-200">Matches</th>
-                      <th className="px-3 py-2 text-right font-semibold text-zinc-700 dark:text-zinc-200">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                    {participants.map((p, idx) => (
-                      <tr key={p.key} className={idx === 0 ? "bg-emerald-50/70 dark:bg-emerald-950/20" : undefined}>
-                        <td className="px-3 py-2 text-zinc-900 dark:text-zinc-100">
-                          <p className="font-medium">{p.displayName}</p>
-                          <p className="text-xs text-zinc-500">{p.personName}</p>
-                        </td>
-                        <td className="px-3 py-2 text-right font-semibold text-zinc-900 dark:text-zinc-100">{p.wins}</td>
-                        <td className="px-3 py-2 text-right font-semibold text-amber-700 dark:text-amber-300">{p.rewardPoints}</td>
-                        <td className="px-3 py-2 text-right text-zinc-700 dark:text-zinc-300">{p.matchesPlayed}</td>
-                        <td className="px-3 py-2 text-right font-mono tabular-nums text-zinc-800 dark:text-zinc-200">
-                          {p.totalPoints.toFixed(2)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {gameResults.length > 0 && (
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Game results (1st &amp; 2nd)</p>
-                  <ul className="mt-2 space-y-2">
-                    {gameResults.map((g) => (
-                      <li
-                        key={g.roomId}
-                        className="rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-700"
-                      >
-                        <p className="truncate text-zinc-900 dark:text-zinc-100">{g.label}</p>
-                        <p className="mt-1 text-xs text-zinc-600 dark:text-zinc-300">
-                          1st: {g.first.displayName} ({g.first.personName}) - {g.first.points.toFixed(2)} pts (+
-                          {g.first.rewardPoints})
-                        </p>
-                        {g.second ? (
-                          <p className="text-xs text-zinc-600 dark:text-zinc-300">
-                            2nd: {g.second.displayName} ({g.second.personName}) - {g.second.points.toFixed(2)} pts (+
-                            {g.second.rewardPoints})
-                          </p>
-                        ) : (
-                          <p className="text-xs text-zinc-500">2nd: Not enough tracked players in this game.</p>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {gameResults.length === 0 && (
-                <p className="text-sm text-zinc-500">
-                  No tracked winners yet. Once these six players join matches with the exact display names, this list
-                  will populate automatically.
-                </p>
-              )}
-                  </>
-                );
-              })()}
-            </>
-          )}
-        </section>
 
         {alreadyJoined && (
           <div
@@ -332,7 +237,7 @@ export default function Home() {
             <div className="mt-3 max-h-56 space-y-2 overflow-y-auto rounded-xl border border-zinc-200 p-2 dark:border-zinc-700">
               {matches.length === 0 ? (
                 <p className="px-2 py-3 text-sm text-zinc-500">
-                  No IPL fixtures for today or yesterday (IST). Use manual ids below.
+                  No IPL fixtures for today or yesterday (IST).
                 </p>
               ) : (
                 matches.map((m) => (
@@ -364,37 +269,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-zinc-200 pt-4 dark:border-zinc-700">
-            <h3 className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Or enter match manually</h3>
-            <p className="mt-1 text-xs text-zinc-500">If the list is empty, paste id + title from cricapi.com.</p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <label className="text-sm text-zinc-700 dark:text-zinc-300">
-                Cricket Data match id
-                <input
-                  className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm dark:border-zinc-600 dark:bg-zinc-950"
-                  value={manualId}
-                  onChange={(e) => {
-                    setManualId(e.target.value);
-                    setAlreadyJoined(null);
-                  }}
-                  placeholder="Optional"
-                />
-              </label>
-              <label className="text-sm text-zinc-700 dark:text-zinc-300">
-                Match title
-                <input
-                  className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-950"
-                  value={manualLabel}
-                  onChange={(e) => {
-                    setManualLabel(e.target.value);
-                    setAlreadyJoined(null);
-                  }}
-                  placeholder="e.g. MI vs CSK"
-                />
-              </label>
-            </div>
-          </div>
-
           <div>
             <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Your team screenshot</h2>
             <p className="mt-1 text-sm text-zinc-500">
@@ -411,7 +285,7 @@ export default function Home() {
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <label
                 htmlFor="team-screenshot-upload"
-                className="inline-flex cursor-pointer rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                className="inline-flex cursor-pointer rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 dark:bg-green-600 dark:hover:bg-green-500"
               >
                 Choose file
               </label>
@@ -446,21 +320,6 @@ export default function Home() {
                 );
               })}
             </div>
-            <select
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-600 dark:bg-zinc-950 dark:text-zinc-100"
-              value={displayName}
-              onChange={(e) => {
-                setDisplayName(e.target.value);
-                setAlreadyJoined(null);
-              }}
-              required
-            >
-              {TRACKED_PLAYERS.map((p) => (
-                <option key={p.key} value={p.displayName}>
-                  {p.displayName} ({p.personName})
-                </option>
-              ))}
-            </select>
           </div>
 
           <button

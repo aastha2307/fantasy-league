@@ -216,17 +216,26 @@ export default function GameLeaderboardPage() {
               Leave empty and save to clear stored points. Use this if OCR misread your screenshot.
             </p>
             <div className="mt-4 border-t border-zinc-200 pt-4 dark:border-zinc-700">
-              <label className="text-sm text-zinc-700 dark:text-zinc-300">
-                Replace screenshot (re-run OCR)
-                <input
-                  type="file"
-                  accept="image/*"
-                  disabled={reuploading}
-                  className="mt-2 block w-full text-sm"
-                  onChange={(e) => void onReplaceScreenshot(e)}
-                />
-              </label>
-              {reuploading ? <p className="mt-1 text-xs text-zinc-500">Processing…</p> : null}
+              <p className="text-sm text-zinc-700 dark:text-zinc-300">Replace screenshot (re-run OCR)</p>
+              <input
+                id="replace-screenshot-upload"
+                type="file"
+                accept="image/*"
+                disabled={reuploading}
+                className="sr-only"
+                onChange={(e) => void onReplaceScreenshot(e)}
+              />
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <label
+                  htmlFor="replace-screenshot-upload"
+                  className={`inline-flex rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 dark:bg-green-600 dark:hover:bg-green-500 ${
+                    reuploading ? "pointer-events-none opacity-50" : "cursor-pointer"
+                  }`}
+                >
+                  Choose file
+                </label>
+                {reuploading ? <span className="text-xs text-zinc-500">Processing…</span> : null}
+              </div>
             </div>
           </section>
         )}
@@ -239,7 +248,7 @@ export default function GameLeaderboardPage() {
             {data.leaderboard.map((row, index) => {
               const isMe = myId === row.playerId;
               const isOpen = expanded[row.playerId] ?? false;
-              const prize = index === 0 ? 120 : index === 1 ? 80 : null;
+              const prize = index === 0 ? 120 : index === 1 ? 60 : null;
               return (
                 <li
                   key={row.playerId}
