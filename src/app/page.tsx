@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatMatchScheduleLabel } from "@/lib/format-match-date";
 import { filterMatchesToTodayAndYesterdayIst, sortMatchesForDisplay } from "@/lib/match-day-filter";
-import { setGamePlayerId } from "@/lib/storage";
+import {
+  getGamePlayerId,
+  getRoomIdForCricMatch,
+  hasJoinedRoomAsDisplayName,
+  setGamePlayerId,
+  setGamePlayerDisplayNameForRoom,
+  setRoomIdForCricMatch,
+} from "@/lib/storage";
 import { TRACKED_PLAYERS } from "@/lib/tracked-players";
 import type { ActiveRoom } from "@/app/api/game/active/route";
 import apiResponse from "@/app/api/cricket/current-matches/apiresponse.json";
+import { AppAlertModal, type AppAlertModalTone } from "@/components/AppAlertModal";
 
 type CricMatch = {
   id: string;
@@ -33,15 +41,25 @@ export default function Home() {
   const [selectedLabel, setSelectedLabel] = useState(TODAYS_MATCHES[0]?.name ?? "");
   const [displayName, setDisplayName] = useState(TRACKED_PLAYERS[0]?.displayName ?? "");
   const [file, setFile] = useState<File | null>(null);
-  const [err, setErr] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [alreadyJoined, setAlreadyJoined] = useState<{
-    roomId: string;
-    playerId: string;
+  const [alertModal, setAlertModal] = useState<{
+    title: string;
     message: string;
+    tone: AppAlertModalTone;
   } | null>(null);
+  const [loading, setLoading] = useState(false);
   const [activeRooms, setActiveRooms] = useState<ActiveRoom[]>([]);
   const [activeRoomsLoading, setActiveRoomsLoading] = useState(true);
+  /** Avoid reading localStorage before mount (SSR/hydration). */
+  const [storageReady, setStorageReady] = useState(false);
+
+  const cricToActiveRoomId = useMemo(
+    () => new Map(activeRooms.map((r) => [r.cricApiMatchId, r.roomId] as const)),
+    [activeRooms]
+  );
+
+  useEffect(() => {
+    setStorageReady(true);
+  }, []);
 
   useEffect(() => {
     void (async () => {
@@ -59,26 +77,49 @@ export default function Home() {
     })();
   }, []);
 
+  /** If this browser already joined an active room, persist match id → room id for the join form. */
+  useEffect(() => {
+    if (!storageReady) return;
+    for (const r of activeRooms) {
+      if (getGamePlayerId(r.roomId)) {
+        setRoomIdForCricMatch(r.cricApiMatchId, r.roomId);
+      }
+    }
+  }, [storageReady, activeRooms]);
+
+  const roomIdForSelectedMatch =
+    storageReady && selectedId
+      ? getRoomIdForCricMatch(selectedId) ?? cricToActiveRoomId.get(selectedId) ?? null
+      : null;
+  const joinedSelectedMatch = Boolean(
+    roomIdForSelectedMatch && hasJoinedRoomAsDisplayName(roomIdForSelectedMatch, displayName)
+  );
+
+  function showAlert(message: string, opts?: { title?: string; tone?: AppAlertModalTone }) {
+    setAlertModal({
+      message,
+      title: opts?.title ?? "Error",
+      tone: opts?.tone ?? "error",
+    });
+  }
 
   function onPickMatch(id: string) {
     setSelectedId(id);
-    setAlreadyJoined(null);
     const m = matches.find((x) => x.id === id);
     setSelectedLabel(m?.name ?? "");
   }
 
   async function joinGame(e: React.FormEvent) {
     e.preventDefault();
-    setErr(null);
-    setAlreadyJoined(null);
+    setAlertModal(null);
     const cricId = selectedId.trim();
     const label = selectedLabel.trim();
     if (!cricId || !label) {
-      setErr("Select a match from the list.");
+      showAlert("Select a match from the list.", { title: "Can’t join yet", tone: "neutral" });
       return;
     }
     if (!displayName.trim()) {
-      setErr("Enter your display name.");
+      showAlert("Enter your display name.", { title: "Can’t join yet", tone: "neutral" });
       return;
     }
 
@@ -101,14 +142,14 @@ export default function Home() {
       };
 
       if (res.status === 409 && data.roomId && data.playerId) {
-        setAlreadyJoined({
-          roomId: data.roomId,
-          playerId: data.playerId,
-          message:
-            typeof data.error === "string"
-              ? data.error
-              : "You’ve already joined this game with that display name.",
-        });
+        setGamePlayerId(data.roomId, data.playerId);
+        setGamePlayerDisplayNameForRoom(data.roomId, displayName.trim());
+        setRoomIdForCricMatch(cricId, data.roomId);
+        const alreadyMsg =
+          typeof data.error === "string" && data.error.trim().length > 0
+            ? data.error.trim()
+            : "You have already joined this game.";
+        showAlert(alreadyMsg, { title: "Already joined", tone: "neutral" });
         return;
       }
 
@@ -116,19 +157,21 @@ export default function Home() {
         const parts = [data.error, data.detail, data.hint].filter(
           (x): x is string => typeof x === "string" && x.length > 0
         );
-        setErr(parts.length > 0 ? parts.join(" — ") : "Could not join game.");
+        showAlert(parts.length > 0 ? parts.join(" — ") : "Could not join game.");
         return;
       }
 
       if (!data.roomId || !data.playerId) {
-        setErr("Unexpected response from server.");
+        showAlert("Unexpected response from server.");
         return;
       }
 
       setGamePlayerId(data.roomId, data.playerId);
+      setGamePlayerDisplayNameForRoom(data.roomId, displayName.trim());
+      setRoomIdForCricMatch(cricId, data.roomId);
       router.push(`/game/${data.roomId}`);
     } catch (x) {
-      setErr(x instanceof Error ? x.message : "Something went wrong");
+      showAlert(x instanceof Error ? x.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -136,6 +179,13 @@ export default function Home() {
 
   return (
     <div className="min-h-full bg-zinc-50 px-4 py-12 dark:bg-zinc-950">
+      <AppAlertModal
+        open={alertModal !== null}
+        title={alertModal?.title ?? ""}
+        message={alertModal?.message ?? ""}
+        tone={alertModal?.tone}
+        onClose={() => setAlertModal(null)}
+      />
       <div className="mx-auto w-full max-w-lg space-y-8">
         <header className="text-center space-y-2">
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
@@ -148,6 +198,7 @@ export default function Home() {
           <p className="text-sm">
             <Link
               href="/overall-leaderboard"
+              prefetch={false}
               className="font-medium text-emerald-700 underline dark:text-emerald-400"
             >
               Overall Leaderboard
@@ -180,55 +231,40 @@ export default function Home() {
                       </p>
                     </div>
                     <div className="flex w-full flex-col gap-2 sm:w-auto sm:shrink-0 sm:flex-row sm:gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAlreadyJoined(null);
-                          setSelectedId(room.cricApiMatchId);
-                          setSelectedLabel(room.label);
-                          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
-                        }}
-                        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 sm:min-h-0 sm:w-auto sm:py-2"
-                      >
-                        Join &amp; upload
-                      </button>
-                      <Link
-                        href={`/game/${room.roomId}`}
-                        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:min-h-0 sm:w-auto sm:py-2"
-                      >
-                        Leaderboard
-                      </Link>
+                      {storageReady && hasJoinedRoomAsDisplayName(room.roomId, displayName) ? (
+                        <Link
+                          href={`/game/${room.roomId}`}
+                          className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 sm:min-h-0 sm:w-auto sm:py-2"
+                        >
+                          Go to Leaderboard
+                        </Link>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedId(room.cricApiMatchId);
+                              setSelectedLabel(room.label);
+                              window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+                            }}
+                            className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 sm:min-h-0 sm:w-auto sm:py-2"
+                          >
+                            Join &amp; upload
+                          </button>
+                          <Link
+                            href={`/game/${room.roomId}`}
+                            className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:min-h-0 sm:w-auto sm:py-2"
+                          >
+                            Leaderboard
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </li>
                 ))}
               </ul>
             )}
           </section>
-        )}
-
-        {alreadyJoined && (
-          <div
-            className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-950/40"
-            role="alert"
-          >
-            <p className="text-sm text-amber-950 dark:text-amber-100">{alreadyJoined.message}</p>
-            <button
-              type="button"
-              className="mt-3 w-full rounded-lg bg-amber-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500"
-              onClick={() => {
-                setGamePlayerId(alreadyJoined.roomId, alreadyJoined.playerId);
-                router.push(`/game/${alreadyJoined.roomId}`);
-              }}
-            >
-              Go to leaderboard
-            </button>
-          </div>
-        )}
-
-        {err && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
-            {err}
-          </p>
         )}
 
         <form onSubmit={joinGame} className="space-y-6 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -309,7 +345,6 @@ export default function Home() {
                     type="button"
                     onClick={() => {
                       setDisplayName(p.displayName);
-                      setAlreadyJoined(null);
                     }}
                     className={`rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
                       selected
@@ -325,13 +360,27 @@ export default function Home() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
-          >
-            {loading ? "Joining…" : "Join game"}
-          </button>
+          {joinedSelectedMatch && roomIdForSelectedMatch ? (
+            <>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                You&apos;ve already joined this match on this device.
+              </p>
+              <Link
+                href={`/game/${roomIdForSelectedMatch}`}
+                className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+              >
+                Go to Leaderboard
+              </Link>
+            </>
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+            >
+              {loading ? "Joining…" : "Join game"}
+            </button>
+          )}
         </form>
 
         <p className="text-center text-sm text-zinc-500">

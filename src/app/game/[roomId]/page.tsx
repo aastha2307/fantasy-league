@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AppAlertModal, type AppAlertModalTone } from "@/components/AppAlertModal";
 import { getGamePlayerId } from "@/lib/storage";
 
 type Row = {
@@ -21,20 +22,27 @@ type Payload = {
   winner: { playerId: string; displayName: string; total: number } | null;
 };
 
+type AlertAfterClose = "retry-load" | "home" | "none";
+
 export default function GameLeaderboardPage() {
+  const router = useRouter();
   const params = useParams();
   const raw = params.roomId;
   const roomId = typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] ?? "" : "";
   const [data, setData] = useState<Payload | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [err, setErr] = useState<string | null>(null);
+  const [alertModal, setAlertModal] = useState<{
+    title: string;
+    message: string;
+    tone: AppAlertModalTone;
+    afterClose: AlertAfterClose;
+  } | null>(null);
 
   const [myId, setMyId] = useState<string | null>(null);
   const [manualPts, setManualPts] = useState("");
   const [savingPts, setSavingPts] = useState(false);
   const [reuploading, setReuploading] = useState(false);
   const [formMsg, setFormMsg] = useState<string | null>(null);
-  const [formErr, setFormErr] = useState<string | null>(null);
   const manualInit = useRef(false);
 
   useEffect(() => {
@@ -47,23 +55,54 @@ export default function GameLeaderboardPage() {
 
   const load = useCallback(async () => {
     if (!roomId) {
-      setErr("Invalid game link.");
+      setAlertModal({
+        title: "Invalid link",
+        message: "This game link is not valid.",
+        tone: "error",
+        afterClose: "home",
+      });
       return;
     }
     try {
       const res = await fetch(`/api/game/${roomId}/leaderboard`, { cache: "no-store" });
       if (!res.ok) {
-        setErr("Could not load this game.");
+        setAlertModal({
+          title: "Couldn’t load game",
+          message: "Could not load this game.",
+          tone: "error",
+          afterClose: "retry-load",
+        });
         return;
       }
       const j = (await res.json()) as Payload;
       setData(j);
-      setErr(null);
+      setAlertModal(null);
     } catch (e) {
       console.error("Leaderboard fetch failed:", e);
-      setErr(e instanceof Error ? e.message : "Could not load this game.");
+      setAlertModal({
+        title: "Couldn’t load game",
+        message: e instanceof Error ? e.message : "Could not load this game.",
+        tone: "error",
+        afterClose: "retry-load",
+      });
     }
   }, [roomId]);
+
+  function closeAlertModal() {
+    setAlertModal((prev) => {
+      if (!prev) return null;
+      const { afterClose } = prev;
+      queueMicrotask(() => {
+        if (afterClose === "retry-load") void load();
+        if (afterClose === "home") router.push("/");
+      });
+      return null;
+    });
+  }
+
+  function showFormAlert(message: string, title = "Something went wrong") {
+    setAlertModal({ title, message, tone: "error", afterClose: "none" });
+  }
 
   useEffect(() => {
     void load();
@@ -85,14 +124,13 @@ export default function GameLeaderboardPage() {
     e.preventDefault();
     if (!myId) return;
     setSavingPts(true);
-    setFormErr(null);
     setFormMsg(null);
     const raw = manualPts.trim();
     let value: number | null = null;
     if (raw !== "") {
       const n = parseFloat(raw);
       if (Number.isNaN(n) || n < 0) {
-        setFormErr("Enter a valid number (or leave empty to clear).");
+        showFormAlert("Enter a valid number (or leave empty to clear).", "Invalid points");
         setSavingPts(false);
         return;
       }
@@ -106,13 +144,13 @@ export default function GameLeaderboardPage() {
       });
       const rawJson = (await res.json()) as { error?: string };
       if (!res.ok) {
-        setFormErr(typeof rawJson.error === "string" ? rawJson.error : "Save failed");
+        showFormAlert(typeof rawJson.error === "string" ? rawJson.error : "Save failed", "Couldn’t save");
         return;
       }
       setFormMsg("Points saved.");
       await load();
     } catch {
-      setFormErr("Save failed");
+      showFormAlert("Save failed", "Couldn’t save");
     } finally {
       setSavingPts(false);
     }
@@ -122,7 +160,6 @@ export default function GameLeaderboardPage() {
     const file = e.target.files?.[0];
     if (!file || !myId) return;
     setReuploading(true);
-    setFormErr(null);
     setFormMsg(null);
     try {
       const fd = new FormData();
@@ -131,7 +168,7 @@ export default function GameLeaderboardPage() {
       const res = await fetch(`/api/game/${roomId}/screenshot`, { method: "POST", body: fd });
       const j = (await res.json()) as { error?: string; ocrPoints?: number | null };
       if (!res.ok) {
-        setFormErr(typeof j.error === "string" ? j.error : "Upload failed");
+        showFormAlert(typeof j.error === "string" ? j.error : "Upload failed", "Upload failed");
         return;
       }
       setFormMsg(
@@ -142,25 +179,43 @@ export default function GameLeaderboardPage() {
       e.target.value = "";
       await load();
     } catch {
-      setFormErr("Upload failed");
+      showFormAlert("Upload failed", "Upload failed");
     } finally {
       setReuploading(false);
     }
   }
 
-  if (err || !data) {
+  if (!data) {
     return (
-      <div className="min-h-full bg-zinc-50 px-4 py-16 text-center dark:bg-zinc-950">
-        <p className="text-zinc-600 dark:text-zinc-400">{err ?? "Loading…"}</p>
-        <Link href="/" className="mt-4 inline-block text-emerald-700 underline dark:text-emerald-400">
-          Home
-        </Link>
+      <div className="min-h-full bg-zinc-50 px-4 py-16 dark:bg-zinc-950">
+        <AppAlertModal
+          open={alertModal !== null}
+          title={alertModal?.title ?? ""}
+          message={alertModal?.message ?? ""}
+          tone={alertModal?.tone}
+          onClose={closeAlertModal}
+        />
+        {!alertModal && (
+          <div className="text-center">
+            <p className="text-zinc-600 dark:text-zinc-400">Loading…</p>
+            <Link href="/" className="mt-4 inline-block text-emerald-700 underline dark:text-emerald-400">
+              Home
+            </Link>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
     <div className="min-h-full bg-zinc-50 px-4 py-10 dark:bg-zinc-950">
+      <AppAlertModal
+        open={alertModal !== null}
+        title={alertModal?.title ?? ""}
+        message={alertModal?.message ?? ""}
+        tone={alertModal?.tone}
+        onClose={closeAlertModal}
+      />
       <div className="mx-auto max-w-3xl space-y-6">
         <div>
           <Link href="/" className="text-sm text-emerald-700 hover:underline dark:text-emerald-400">
@@ -191,7 +246,6 @@ export default function GameLeaderboardPage() {
           <section className="rounded-xl border border-emerald-200/80 bg-white p-4 shadow-sm dark:border-emerald-900/50 dark:bg-zinc-900">
             <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-100">Your points</h2>
             {formMsg && <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-200">{formMsg}</p>}
-            {formErr && <p className="mt-2 text-sm text-red-700 dark:text-red-300">{formErr}</p>}
             <form onSubmit={saveManualPoints} className="mt-3 flex flex-wrap items-end gap-3">
               <label className="block">
                 <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">Fantasy points total</span>
